@@ -1,54 +1,830 @@
-# RURBANIVE Plant Species Database
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Species Database – Milos Restoration</title>
 
-A plant species database homepage developed as part of the RURBANIVE Project.
+  <style>
+    @import "https://unpkg.com/open-props" layer(design.system);
+    @import "https://unpkg.com/open-props/normalize.min.css" layer(demo.support);
 
-This page presents a searchable and interactive collection of plant species used in ecological restoration on Milos Island following quarrying activities. It supports exploration of indigenous species adapted to local conditions and highlights species of ecological, cultural, and practical value.
+    :root{
+      --menuW: 300px;
+      --peek: 22px;
 
-## Project Context
+      /* Brand palette */
+      --g-dark: #326450;
+      --g-light: #A5BE3C;
+      --y-accent: #ECBF00;
+      --ink: #212125;
 
-This homepage is part of:
+      --site-bg: radial-gradient(
+        circle at 50% 50%,
+        #eaf3ef 0%,
+        #d6e7df 18%,
+        #c2dbd0 35%,
+        #b2d0c3 52%
+      );
+    }
 
-RUE#2  
-Ecosystem and Biodiversity Restoration
+    *{ box-sizing: border-box; }
 
-Part of the RURBANIVE Project
+    html, body{
+      height: 100%;
+      margin: 0;
+      background: var(--site-bg);
+    }
 
-Lead Partners: Agricultural University of Athens (AUA) and IMERYS
+    body{
+      min-height: 100vh;
+      font-family: system-ui, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--site-bg);
+      background-attachment: fixed;
+    }
 
-## Overview
+    .page{
+      width: min(1400px, 100%);
+      margin-inline: auto;
+      padding: 28px 24px 80px;
+      padding-left: calc(24px + var(--peek));
+    }
 
-The Plant Species Database homepage provides an accessible interface for browsing plant species relevant to restoration activities on Milos Island.
+    .page-header{
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 18px;
+      align-items: start;
+      width: min(1200px, 100%);
+      margin: 10px auto 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(0,0,0,0.06);
+      backdrop-filter: blur(8px);
+    }
 
-It includes:
+    @media (max-width: 900px){
+      .page-header{ grid-template-columns: 1fr; }
+    }
 
-- a searchable plant card interface
-- filtering by edible species
-- filtering by bee-friendly species
-- random plant selection
-- dynamic loading of plant data from a CSV database
-- animated navigation toolbar consistent with the RURBANIVE homepage design
+    .header-left h1{
+      margin: 0 0 8px;
+      font-size: clamp(26px, 3vw, 40px);
+      letter-spacing: 0.2px;
+    }
 
-The database focuses primarily on indigenous species suited to the environmental conditions of Milos and relevant to ecosystem recovery and restoration practice.
+    .header-left p{
+      margin: 0;
+      line-height: 1.35;
+      color: color-mix(in srgb, var(--ink), #ffffff 45%);
+    }
 
-## Features
+    .controls{
+      display: grid;
+      gap: 10px;
+    }
 
-- Search by scientific name, Greek name, or family
-- Filter plants by edible value
-- Filter plants by bee-plant value
-- Random plant selection
-- Responsive card-based layout
-- Animated blob-style navigation menu
-- Dynamic CSV-based plant data loading
+    .controls input[type="search"]{
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.14);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(6px);
+      outline: none;
+    }
 
-## Technologies
+    .controls input[type="search"]:focus{
+      border-color: color-mix(in srgb, var(--g-dark), white 25%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--g-light), transparent 70%);
+    }
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
+    .button-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-## Project Structure
+    .controls button{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.14);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      font-size: 14px;
+    }
 
-```text
-.
-├── plant-database.html
-├── README.md
+    .controls button:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .controls button[aria-pressed="true"]{
+      border-color: color-mix(in srgb, var(--y-accent), black 10%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--y-accent), transparent 70%);
+    }
+
+    .status-line{
+      margin-top: 8px;
+      font-size: 13px;
+      color: color-mix(in srgb, var(--ink), #ffffff 55%);
+    }
+
+    #menu{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--menuW);
+      height: 100%;
+      background: var(--g-dark);
+      z-index: 30;
+      overflow: visible;
+      transform: translateX(calc(-100% + var(--peek)));
+      transition: transform 900ms cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    #menu.expanded{ transform: translateX(0); }
+
+    .menu-inner{
+      position: relative;
+      height: 100%;
+      z-index: 10;
+      padding: 18px 0 0;
+    }
+
+    .brand{
+      width: 100%;
+      padding: 4px 18px 0px;
+    }
+
+    .brand-logo{
+      display: block;
+      width: min(210px, 80%);
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+    }
+
+    .menu-inner ul{
+      margin: 0;
+      padding: 10px 0 0;
+      list-style: none;
+      width: 80%;
+      margin-left: 10%;
+    }
+
+    .menu-inner li{
+      color: rgba(255,255,255,0.92);
+      padding: 16px 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    .menu-inner li:hover{ color: var(--y-accent); }
+    .menu-inner li a{ color: inherit; text-decoration: none; }
+
+    #blob{
+      position: absolute;
+      top: 0;
+      right: calc(-1 * var(--peek));
+      width: var(--peek);
+      min-width: var(--peek);
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      overflow: visible;
+      display: block;
+    }
+
+    #blob-path{ fill: var(--g-dark); }
+
+    .hamburger{
+      position: absolute;
+      right: calc(-1 * var(--peek) + 10px);
+      width: 34px;
+      height: 26px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    .hamburger .line{
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--y-accent);
+      border-radius: 999px;
+    }
+
+    .hamburger .line:nth-child(1){ top: 0; }
+    .hamburger .line:nth-child(2){ top: 50%; transform: translateY(-50%); }
+    .hamburger .line:nth-child(3){ bottom: 0; }
+
+    @keyframes slide-in {
+      from {
+        scale: .85;
+        rotate: calc((var(--side, 1) * (5deg * var(--amp, 1))));
+      }
+    }
+
+    @layer demo {
+      .card-animation-layer {
+        @media (prefers-reduced-motion: no-preference) {
+          @supports (animation-timeline: view()) {
+            animation: slide-in linear both;
+            animation-timeline: view();
+            animation-range: cover 0% contain 15%;
+          }
+        }
+      }
+    }
+
+    #plantGrid{
+      --cols: 2;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, var(--size-content-1)));
+      gap: var(--size-5);
+      padding-inline: var(--size-5);
+      padding-block: 18px 60px;
+      place-items: start;
+      justify-content: center;
+    }
+
+    @media (min-width: 720px){
+      #plantGrid{ --cols: 4; }
+    }
+
+    @media (min-width: 1200px){
+      #plantGrid{ --cols: 6; }
+    }
+
+    @media (min-width: 1920px){
+      #plantGrid{ --cols: 8; }
+    }
+
+    #plantGrid > .card-animation-layer{
+      display: grid;
+      gap: var(--size-2);
+    }
+
+    #plantGrid > .card-animation-layer:nth-of-type(2n + 1){
+      transform-origin: 25vw 100%;
+      --side: -1;
+    }
+
+    #plantGrid > .card-animation-layer:nth-of-type(2n){
+      transform-origin: -25vw 100%;
+      --side: 1;
+    }
+
+    .card{
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: var(--size-3);
+      border-radius: var(--radius-4);
+      box-shadow: var(--shadow-4);
+      backdrop-filter: blur(6px);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .card:hover{
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-5);
+    }
+
+    .card p{
+      margin: 0;
+      line-height: 1.25;
+      color: color-mix(in srgb, var(--ink), #ffffff 35%);
+    }
+
+    .card a{ color: inherit; text-decoration: none; }
+    .card a:hover{ text-decoration: underline; }
+
+    .card.picked{
+      outline: 3px solid color-mix(in srgb, var(--y-accent), white 15%);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+    }
+
+    .image-wrap{
+      position: relative;
+      border-radius: var(--radius-3);
+      overflow: hidden;
+      background: rgba(0,0,0,0.04);
+    }
+
+    .image-wrap.loading::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.0) 0%,
+        rgba(255,255,255,0.55) 50%,
+        rgba(255,255,255,0.0) 100%
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.1s infinite;
+    }
+
+    @keyframes shimmer{
+      to { transform: translateX(100%); }
+    }
+
+    .image-wrap img{
+      background-color: rgba(0,0,0,0.03);
+      border-radius: var(--radius-3);
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 220ms ease;
+    }
+
+    .card:hover .image-wrap img{
+      transform: scale(1.03);
+    }
+
+    .loading, .error{
+      color: color-mix(in srgb, var(--ink), #ffffff 35%);
+      font-size: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="menu">
+    <button class="hamburger" type="button" aria-label="Toggle menu">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </button>
+
+    <div class="menu-inner">
+      <div class="brand">
+        <a href="https://rurbanive-project.eu/"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Visit the RURBANIVE project website">
+          <img
+            class="brand-logo"
+            src="https://zenodo.org/records/18361008/files/RURBANIVE_stroke.png?download=1"
+            alt="RURBANIVE – Rural Urban Immersiveness"
+            loading="eager"
+          />
+        </a>
+      </div>
+
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="plant-database.html" aria-current="page">Plant Database</a></li>
+        <li><a href="restoration-protocols.html">Restoration Protocols</a></li>
+        <li><a href="legislation.html">Legislation</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+
+    <svg id="blob" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 1000" preserveAspectRatio="none">
+      <path id="blob-path" d=""></path>
+    </svg>
+  </div>
+
+  <main class="page">
+    <header class="page-header">
+      <div class="header-left">
+        <h1>Plant Species Database</h1>
+        <p>
+          A collection of plant species applied in ecological restoration on Milos Island following quarrying activities,
+          aimed at rehabilitating degraded landscapes and supporting ecosystem recovery. The database primarily includes
+          indigenous species adapted to local conditions; some of these species are also edible, highlighting their cultural
+          and practical value.
+        </p>
+      </div>
+
+      <div class="header-right">
+        <div class="controls" role="search">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search by scientific name, Greek name, or family…"
+            aria-label="Search plants"
+            autocomplete="off"
+          />
+
+          <div class="button-row">
+            <button id="edibleBtn" type="button" aria-pressed="false" title="Show edible plants only">
+              Edible
+            </button>
+
+            <button id="beeBtn" type="button" aria-pressed="false" title="Show bee-friendly plants only">
+              Bee plants
+            </button>
+
+            <button id="randomBtn" type="button" title="Pick a random plant">
+              Random
+            </button>
+
+            <button id="clearBtn" type="button" title="Clear search and filters">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div id="statusLine" class="status-line" aria-live="polite"></div>
+      </div>
+    </header>
+
+    <section id="plantGrid" aria-label="Plant cards"></section>
+  </main>
+
+  <script>
+    (() => {
+      const menu = document.getElementById("menu");
+      const blob = document.getElementById("blob");
+      const blobPath = document.getElementById("blob-path");
+      const hamburger = document.querySelector(".hamburger");
+      const menuInner = document.querySelector(".menu-inner");
+
+      if (!menu || !blob || !blobPath || !hamburger || !menuInner) return;
+
+      const VB_W = 60;
+      const VB_H = 1000;
+
+      const anchorDistance = 120;
+      const curviness = anchorDistance - 55;
+      const hoverZone = 150;
+      const expandAmount = 8;
+      const maxPull = 22;
+
+      function getPeek() {
+        const raw = getComputedStyle(document.documentElement)
+          .getPropertyValue("--peek")
+          .trim();
+        const n = parseFloat(raw);
+        return Number.isFinite(n) ? n : 22;
+      }
+      let peek = getPeek();
+
+      let mouseX = 0;
+      let mouseYpx = window.innerHeight / 2;
+
+      let yPx = mouseYpx;
+      let curveX = 0;
+      let targetX = 0;
+
+      let menuExpanded = false;
+
+      const SMOOTH_Y = 0.18;
+      const SMOOTH_X = 0.12;
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+      function openMenu() {
+        menu.classList.add("expanded");
+        menuExpanded = true;
+      }
+
+      function closeMenu() {
+        menu.classList.remove("expanded");
+        menuExpanded = false;
+      }
+
+      window.addEventListener("pointermove", (e) => {
+        mouseX = e.clientX;
+        mouseYpx = e.clientY;
+      });
+
+      window.addEventListener("resize", () => {
+        peek = getPeek();
+      });
+
+      hamburger.addEventListener("mouseenter", openMenu);
+      menuInner.addEventListener("mouseenter", openMenu);
+      menu.addEventListener("mouseleave", closeMenu);
+
+      hamburger.addEventListener("click", (e) => {
+        e.preventDefault();
+        menuExpanded ? closeMenu() : openMenu();
+      });
+
+      (function initPath() {
+        const yVB0 = VB_H / 2;
+        const d0 =
+          "M" + VB_W + "," + VB_H +
+          "H0V0h" + VB_W +
+          "v" + (yVB0 - anchorDistance) +
+          "c0," + curviness + ",0," + curviness + ",0," + anchorDistance +
+          "S" + VB_W + "," + yVB0 + "," + VB_W + "," + (yVB0 + anchorDistance * 2) +
+          "V" + VB_H + "z";
+        blobPath.setAttribute("d", d0);
+        blob.style.width = peek + "px";
+      })();
+
+      function tick() {
+        const vh = Math.max(1, window.innerHeight);
+
+        const minPx = (anchorDistance / VB_H) * vh;
+        const maxPx = ((VB_H - anchorDistance) / VB_H) * vh;
+        const clampedY = Math.min(maxPx, Math.max(minPx, mouseYpx));
+
+        yPx = lerp(yPx, clampedY, SMOOTH_Y);
+
+        const hamH = hamburger.offsetHeight || 26;
+        hamburger.style.top = (yPx - hamH / 2) + "px";
+
+        const yVB = (yPx / vh) * VB_H;
+
+        if (menuExpanded || mouseX > hoverZone) {
+          targetX = 0;
+        } else {
+          const raw = -(((VB_W + expandAmount) / 100) * (mouseX - hoverZone));
+          targetX = Math.max(-maxPull, Math.min(0, raw));
+        }
+
+        curveX = lerp(curveX, targetX, SMOOTH_X);
+
+        const d =
+          "M" + VB_W + "," + VB_H +
+          "H0V0h" + VB_W +
+          "v" + (yVB - anchorDistance) +
+          "c0," + curviness + "," + curveX + "," + curviness + "," + curveX + "," + anchorDistance +
+          "S" + VB_W + "," + yVB + "," + VB_W + "," + (yVB + anchorDistance * 2) +
+          "V" + VB_H + "z";
+
+        blobPath.setAttribute("d", d);
+        blob.style.width = (peek + Math.abs(curveX)) + "px";
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    })();
+
+    (() => {
+      const CSV_URL =
+        "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site.csv";
+
+      const grid = document.getElementById("plantGrid");
+      const searchInput = document.getElementById("searchInput");
+      const edibleBtn = document.getElementById("edibleBtn");
+      const beeBtn = document.getElementById("beeBtn");
+      const randomBtn = document.getElementById("randomBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const statusLine = document.getElementById("statusLine");
+
+      if (!grid) return;
+
+      let allPlants = [];
+      let edibleOnly = false;
+      let beeOnly = false;
+      let lastRendered = [];
+
+      function setStatus(msg){
+        if (statusLine) statusLine.textContent = msg || "";
+      }
+
+      function parseCSV(text) {
+        const rows = [];
+        let row = [];
+        let field = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          const next = text[i + 1];
+
+          if (c === '"' && inQuotes && next === '"') {
+            field += '"';
+            i++;
+            continue;
+          }
+          if (c === '"') {
+            inQuotes = !inQuotes;
+            continue;
+          }
+          if (c === "," && !inQuotes) {
+            row.push(field);
+            field = "";
+            continue;
+          }
+          if ((c === "\n" || c === "\r") && !inQuotes) {
+            if (c === "\r" && next === "\n") i++;
+            row.push(field);
+            field = "";
+            if (row.some(v => v.trim() !== "")) rows.push(row);
+            row = [];
+            continue;
+          }
+          field += c;
+        }
+
+        if (field.length || row.length) {
+          row.push(field);
+          if (row.some(v => v.trim() !== "")) rows.push(row);
+        }
+        return rows;
+      }
+
+      function rowsToObjects(rows) {
+        const headers = rows[0].map(h => h.replace(/^\uFEFF/, "").trim());
+        return rows.slice(1).map(r => {
+          const obj = {};
+          headers.forEach((h, i) => (obj[h] = (r[i] ?? "").trim()));
+          return obj;
+        });
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function pickField(p, candidates) {
+        for (const k of candidates) {
+          if (p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") {
+            return String(p[k]).trim();
+          }
+        }
+        return "";
+      }
+
+      function isYes(val){
+        return /^yes$/i.test(String(val || "").trim());
+      }
+
+      function isEdibleYes(p) {
+        const val = pickField(p, ["Edible", "edible", "EDIBLE"]);
+        return isYes(val);
+      }
+
+      function isBeeYes(p) {
+        const val = pickField(p, ["Bee plant"]);
+        return isYes(val);
+      }
+
+      function matchesSearch(p, q) {
+        if (!q) return true;
+        const sci = pickField(p, ["scientific_name", "Scientific Name", "scientific name"]);
+        const greek = pickField(p, ["Greek Name"]);
+        const fam = pickField(p, ["Family", "family"]);
+        const hay = `${sci} ${greek} ${fam}`.toLowerCase();
+        return hay.includes(q.toLowerCase());
+      }
+
+      function attachImageHandlers() {
+        const imgs = grid.querySelectorAll("img[data-shimmer='1']");
+        imgs.forEach(img => {
+          const wrap = img.closest(".image-wrap");
+          if (!wrap) return;
+
+          const done = () => wrap.classList.remove("loading");
+
+          if (img.complete && img.naturalWidth > 0) {
+            done();
+          } else {
+            img.addEventListener("load", done, { once: true });
+            img.addEventListener("error", () => {
+              done();
+              wrap.style.background = "rgba(0,0,0,0.06)";
+            }, { once: true });
+          }
+        });
+      }
+
+      function render(plants) {
+        lastRendered = plants.filter(p => p.card_image && p.scientific_name);
+
+        const html = lastRendered.map((p) => {
+          const id = p.id || "";
+          const img = escapeHtml(p.card_image);
+          const sci = escapeHtml(p.scientific_name);
+          const fam = escapeHtml(p.Family || "");
+          const href = `plant.html?id=${encodeURIComponent(id)}`;
+
+          return `
+            <div class="card-animation-layer">
+              <article class="card" data-id="${escapeHtml(id)}">
+                <a href="${href}">
+                  <div class="image-wrap loading">
+                    <img data-shimmer="1" src="${img}" alt="${sci}" decoding="async" height="500" width="500">
+                  </div>
+                </a>
+                <p>
+                  <a href="${href}"><strong><em>${sci}</em></strong></a><br>
+                  <span>${fam}</span>
+                </p>
+              </article>
+            </div>
+          `;
+        }).join("");
+
+        grid.innerHTML = html || `<p class="error">No plants match your filters.</p>`;
+        attachImageHandlers();
+        setStatus(`${lastRendered.length} plants shown`);
+      }
+
+      function applyFilters() {
+        const q = (searchInput?.value || "").trim();
+
+        const filtered = allPlants
+          .filter(p => matchesSearch(p, q))
+          .filter(p => (edibleOnly ? isEdibleYes(p) : true))
+          .filter(p => (beeOnly ? isBeeYes(p) : true));
+
+        render(filtered);
+      }
+
+      function clearPicked(){
+        grid.querySelectorAll(".card.picked").forEach(el => el.classList.remove("picked"));
+      }
+
+      function pickRandomPlant(){
+        if (!lastRendered.length) {
+          setStatus("No plants available to pick from.");
+          return;
+        }
+
+        const chosen = lastRendered[Math.floor(Math.random() * lastRendered.length)];
+        const id = chosen.id || "";
+        const sci = chosen.scientific_name || "Random plant";
+
+        const el = grid.querySelector(`.card[data-id="${CSS.escape(String(id))}"]`);
+        if (!el) return;
+
+        clearPicked();
+        el.classList.add("picked");
+
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setStatus(`Random pick: ${sci}`);
+      }
+
+      async function init() {
+        try {
+          grid.innerHTML = `<p class="loading">Loading plants…</p>`;
+          const res = await fetch(CSV_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+
+          const text = await res.text();
+          const rows = parseCSV(text);
+          allPlants = rowsToObjects(rows);
+
+          applyFilters();
+
+          if (searchInput) searchInput.addEventListener("input", applyFilters);
+
+          if (edibleBtn) {
+            edibleBtn.addEventListener("click", () => {
+              edibleOnly = !edibleOnly;
+              edibleBtn.setAttribute("aria-pressed", String(edibleOnly));
+              applyFilters();
+            });
+          }
+
+          if (beeBtn) {
+            beeBtn.addEventListener("click", () => {
+              beeOnly = !beeOnly;
+              beeBtn.setAttribute("aria-pressed", String(beeOnly));
+              applyFilters();
+            });
+          }
+
+          if (randomBtn) {
+            randomBtn.addEventListener("click", pickRandomPlant);
+          }
+
+          if (clearBtn) {
+            clearBtn.addEventListener("click", () => {
+              if (searchInput) searchInput.value = "";
+              edibleOnly = false;
+              beeOnly = false;
+
+              edibleBtn?.setAttribute("aria-pressed", "false");
+              beeBtn?.setAttribute("aria-pressed", "false");
+
+              applyFilters();
+              setStatus("Filters cleared.");
+            });
+          }
+
+        } catch (e) {
+          console.error(e);
+          grid.innerHTML = `<p class="error">Could not load the plant database. Check Console.</p>`;
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
