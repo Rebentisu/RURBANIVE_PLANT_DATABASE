@@ -132,7 +132,7 @@ input:focus-visible {
   color: #516358;
 }
 
-/* ORIGINAL BLOB MENU */
+/* ANIMATED BLOB MENU */
 
 #menu {
   position: fixed;
@@ -228,10 +228,12 @@ input:focus-visible {
 }
 
 .hamburger .line:nth-child(1) { top: 0; }
+
 .hamburger .line:nth-child(2) {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .hamburger .line:nth-child(3) { bottom: 0; }
 
 /* PLANT CARDS */
@@ -336,9 +338,10 @@ input:focus-visible {
 }
 
 .status-pill {
-  padding: 4px 7px;
+  padding: 5px 8px;
   border-radius: 7px;
   font-size: 11px;
+  line-height: 1.4;
   font-weight: 650;
 }
 
@@ -347,7 +350,8 @@ input:focus-visible {
   background: #e1f3e7;
 }
 
-.status-pill.possible {
+.status-pill.possible,
+.status-pill.warning {
   color: var(--warning);
   background: #fff0ce;
 }
@@ -418,12 +422,14 @@ body:has(dialog[open]) {
 .plant-heading p {
   margin: 0;
   color: #5a6f61;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .section-heading {
-  margin: 25px 0 12px;
+  margin: 28px 0 14px;
   color: var(--g-dark);
-  font-size: 20px;
+  font-size: 22px;
 }
 
 /* GALLERY */
@@ -489,7 +495,7 @@ body:has(dialog[open]) {
 
 .trait {
   min-width: 0;
-  padding: 12px 14px;
+  padding: 14px 16px;
   background: white;
   border: 1px solid #dae6de;
   border-radius: 12px;
@@ -502,17 +508,19 @@ body:has(dialog[open]) {
 
 .trait-label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   color: #577365;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .04em;
 }
 
+/* LARGER POPUP TEXT */
+
 .trait-value {
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   white-space: pre-wrap;
 }
 
@@ -536,9 +544,9 @@ body:has(dialog[open]) {
 }
 
 .trait-mechanism {
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.5;
+  margin-top: 9px;
+  font-size: 15px;
+  line-height: 1.6;
   color: #46594d;
   white-space: pre-wrap;
 }
@@ -549,7 +557,7 @@ body:has(dialog[open]) {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 14px;
-  margin-top: 14px;
+  margin: 14px 0;
 }
 
 .symbiont-box {
@@ -561,8 +569,8 @@ body:has(dialog[open]) {
 }
 
 .symbiont-box h4 {
-  margin: 0 0 10px;
-  font-size: 16px;
+  margin: 0 0 12px;
+  font-size: 17px;
   color: var(--g-dark);
 }
 
@@ -596,9 +604,9 @@ body:has(dialog[open]) {
 }
 
 .symbiont-caption {
-  margin: 10px 0 0;
-  font-size: 12px;
-  line-height: 1.5;
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
   color: #526157;
 }
 
@@ -645,8 +653,8 @@ body:has(dialog[open]) {
 
 .lightbox-figure figcaption {
   text-align: center;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .lightbox-arrow {
@@ -723,7 +731,17 @@ body:has(dialog[open]) {
     grid-template-columns: 1fr;
   }
 
-  .trait.wide { grid-column: auto; }
+  .trait.wide {
+    grid-column: auto;
+  }
+
+  .trait-value {
+    font-size: 15px;
+  }
+
+  .trait-mechanism {
+    font-size: 14px;
+  }
 
   .lightbox-figure {
     padding: 60px 36px 20px;
@@ -749,7 +767,8 @@ body:has(dialog[open]) {
 <!-- RURBANIVE NAVIGATION -->
 
 <div id="menu">
-  <button class="hamburger" type="button"
+  <button class="hamburger"
+          type="button"
           aria-label="Toggle menu"
           aria-expanded="false">
     <span class="line"></span>
@@ -758,6 +777,7 @@ body:has(dialog[open]) {
   </button>
 
   <div class="menu-inner">
+
     <div class="brand">
       <a href="https://rurbanive-project.eu/"
          target="_blank"
@@ -770,21 +790,34 @@ body:has(dialog[open]) {
 
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="plant-database.html" aria-current="page">Plant Database</a></li>
-      <li><a href="restoration-protocols.html">Restoration Protocols</a></li>
-      <li><a href="legislation.html">Legislation</a></li>
-      <li><a href="about.html">About</a></li>
+      <li>
+        <a href="plant-database.html"
+           aria-current="page">Plant Database</a>
+      </li>
+      <li>
+        <a href="restoration-protocols.html">
+          Restoration Protocols
+        </a>
+      </li>
+      <li>
+        <a href="legislation.html">Legislation</a>
+      </li>
+      <li>
+        <a href="about.html">About</a>
+      </li>
     </ul>
+
   </div>
 
-  <svg id="blob" viewBox="0 0 60 1000"
+  <svg id="blob"
+       viewBox="0 0 60 1000"
        preserveAspectRatio="none"
        aria-hidden="true">
     <path id="blob-path" d=""></path>
   </svg>
 </div>
 
-<!-- PAGE -->
+<!-- MAIN PAGE -->
 
 <main class="page">
 
@@ -792,6 +825,7 @@ body:has(dialog[open]) {
 
     <div class="header-left">
       <h1>Plant Species Database</h1>
+
       <p>
         A collection of plant species applied in ecological restoration
         on Milos Island following quarrying activities, aimed at
@@ -803,6 +837,7 @@ body:has(dialog[open]) {
     </div>
 
     <div class="header-right">
+
       <div class="controls" role="search">
 
         <input id="searchInput"
@@ -813,57 +848,81 @@ body:has(dialog[open]) {
 
         <div class="button-row" id="filterButtons">
 
-          <button data-filter="edible" aria-pressed="false">
+          <button data-filter="edible"
+                  aria-pressed="false">
             Edible
           </button>
 
-          <button data-filter="bee" aria-pressed="false">
+          <button data-filter="bee"
+                  aria-pressed="false">
             Bee plants
           </button>
 
-          <button data-filter="salinity" aria-pressed="false">
+          <button data-filter="salinity"
+                  aria-pressed="false">
             Salinity tolerance
           </button>
 
-          <button data-filter="fire" aria-pressed="false">
+          <button data-filter="fire"
+                  aria-pressed="false">
             Fire resistance
           </button>
 
-          <button data-filter="herbivory" aria-pressed="false">
+          <button data-filter="herbivory"
+                  aria-pressed="false">
             Anti-herbivory traits
           </button>
 
-          <button data-filter="allelopathy" aria-pressed="false">
+          <button data-filter="allelopathy"
+                  aria-pressed="false">
             Allelopathy
           </button>
 
-          <button data-filter="rhizobia" aria-pressed="false">
+          <button data-filter="rhizobia"
+                  aria-pressed="false">
             Rhizobial association
           </button>
 
-          <button data-filter="conservation" aria-pressed="false">
+          <button data-filter="conservation"
+                  aria-pressed="false">
             Conservation concern
           </button>
 
-          <button id="randomBtn" type="button">Random</button>
-          <button id="clearBtn" type="button">Clear</button>
+          <button id="randomBtn"
+                  type="button">
+            Random
+          </button>
+
+          <button id="clearBtn"
+                  type="button">
+            Clear
+          </button>
 
         </div>
+
       </div>
 
-      <div id="statusLine" class="status-line"
-           role="status" aria-live="polite"></div>
+      <div id="statusLine"
+           class="status-line"
+           role="status"
+           aria-live="polite"></div>
+
     </div>
 
   </header>
 
-  <section id="plantGrid" aria-label="Plant cards"></section>
+  <section id="plantGrid"
+           aria-label="Plant cards"></section>
 
   <footer class="database-footer">
-    <span>RURBANIVE · Milos ecosystem and biodiversity restoration</span>
+    <span>
+      RURBANIVE · Milos ecosystem and biodiversity restoration
+    </span>
+
     <a href="https://doi.org/10.5281/zenodo.23456678"
-       target="_blank" rel="noopener noreferrer">
-       Photographic dataset on Zenodo
+       target="_blank"
+       rel="noopener noreferrer">
+      Photographic dataset on Zenodo
     </a>
   </footer>
 
@@ -871,15 +930,22 @@ body:has(dialog[open]) {
 
 <!-- SPECIES POPUP -->
 
-<dialog id="plantDialog" aria-label="Plant species details">
-  <button id="closePlantDialog" class="dialog-close"
-          type="button" aria-label="Close plant details">×</button>
+<dialog id="plantDialog"
+        aria-label="Plant species details">
+
+  <button id="closePlantDialog"
+          class="dialog-close"
+          type="button"
+          aria-label="Close plant details">×</button>
+
   <div id="plantDialogContent"></div>
+
 </dialog>
 
-<!-- PHOTOGRAPH LIGHTBOX -->
+<!-- IMAGE LIGHTBOX -->
 
-<dialog id="photoLightbox" aria-label="Enlarged photograph">
+<dialog id="photoLightbox"
+        aria-label="Enlarged photograph">
 
   <button id="closePhotoLightbox"
           class="lightbox-close"
@@ -906,16 +972,17 @@ body:has(dialog[open]) {
 <script>
 "use strict";
 
-/* ===========================================
-   DATABASE AND UTILITIES
-   =========================================== */
+/* ==========================================
+   DATABASE
+   ========================================== */
 
 const CSV_URL =
   "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site_rurbanive_with_images.csv";
 
 const $ = id => document.getElementById(id);
 
-const clean = value => String(value ?? "").trim();
+const clean = value =>
+  String(value ?? "").trim();
 
 const escapeHTML = value =>
   String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -926,10 +993,14 @@ const escapeHTML = value =>
     "'": "&#39;"
   }[c]));
 
-const field = (plant, key) => clean(plant[key]);
+const field = (plant, key) =>
+  clean(plant[key]);
 
-const isYes = value => /^yes$/i.test(clean(value));
-const isPossible = value => /^possible$/i.test(clean(value));
+const isYes = value =>
+  /^yes$/i.test(clean(value));
+
+const isPossible = value =>
+  /^possible$/i.test(clean(value));
 
 const isPositiveOrPossible = value =>
   isYes(value) || isPossible(value);
@@ -942,30 +1013,60 @@ const imageURLs = value =>
 
 function speciesName(plant) {
   return field(plant, "scientific_name")
-    .replace(/Erica malipuliflora/gi, "Erica manipuliflora");
+    .replace(
+      /Erica malipuliflora/gi,
+      "Erica manipuliflora"
+    )
+    .replace(
+      /Juniperus phoenicea/gi,
+      "Juniperus turbinata"
+    );
 }
 
-/* ===========================================
+/* ==========================================
+   ALPHABETICAL SORTING
+   ========================================== */
+
+function sortPlantsAlphabetically(plants) {
+  return [...plants].sort((a, b) =>
+    speciesName(a).localeCompare(
+      speciesName(b),
+      "en",
+      {sensitivity: "base"}
+    )
+  );
+}
+
+/* ==========================================
    CONSERVATION STATUS
-   =========================================== */
+   ========================================== */
 
 function isThreatened(value) {
   return /\b(VU|EN|CR)\b|\bvulnerable\b|\bendangered\b|\bcritically endangered\b/i
     .test(clean(value));
 }
 
+function isNearThreatened(value) {
+  return /\bNT\b|\bnear threatened\b/i
+    .test(clean(value));
+}
+
 function isDeclining(value) {
-  return /decreas|declining|in decline/i.test(clean(value));
+  return /decreas|declining|in decline/i
+    .test(clean(value));
 }
 
 function isConservationConcern(plant) {
-  return isDeclining(plant["Population Trend"]) ||
-         isThreatened(plant["Red list Assessment"]);
+  return (
+    isDeclining(plant["Population Trend"]) ||
+    isThreatened(plant["Red list Assessment"]) ||
+    isNearThreatened(plant["Red list Assessment"])
+  );
 }
 
-/* ===========================================
+/* ==========================================
    CSV PARSER
-   =========================================== */
+   ========================================== */
 
 function parseCSV(input) {
   const rows = [];
@@ -984,17 +1085,23 @@ function parseCSV(input) {
       } else {
         quoted = !quoted;
       }
+
     } else if (c === "," && !quoted) {
       row.push(value);
       value = "";
+
     } else if ((c === "\n" || c === "\r") && !quoted) {
       if (c === "\r" && next === "\n") i++;
 
       row.push(value);
       value = "";
 
-      if (row.some(x => x.trim())) rows.push(row);
+      if (row.some(x => x.trim())) {
+        rows.push(row);
+      }
+
       row = [];
+
     } else {
       value += c;
     }
@@ -1002,41 +1109,59 @@ function parseCSV(input) {
 
   if (value.length || row.length) {
     row.push(value);
-    if (row.some(x => x.trim())) rows.push(row);
+
+    if (row.some(x => x.trim())) {
+      rows.push(row);
+    }
   }
 
   const headers = (rows.shift() || [])
-    .map(h => h.replace(/^\uFEFF/, "").trim());
+    .map(h =>
+      h.replace(/^\uFEFF/, "")
+       .replace(/\u00c2/g, "")
+       .trim()
+    );
 
   return rows.map(row =>
     Object.fromEntries(
-      headers.map((h, i) => [h, clean(row[i])])
+      headers.map((h, i) => [
+        h,
+        clean(row[i])
+      ])
     )
   );
 }
 
-/* ===========================================
+/* ==========================================
    FILTERS
-   =========================================== */
+   ========================================== */
 
 const filterRules = {
-  edible: p => isYes(p.Edible),
 
-  bee: p => isYes(p["Bee plant"]),
+  edible: p =>
+    isYes(p.Edible),
 
-  salinity: p => isYes(p["Salinity Tolerance"]),
+  bee: p =>
+    isYes(p["Bee plant"]),
 
-  fire: p => isPositiveOrPossible(p["Fire resistance"]),
+  salinity: p =>
+    isYes(p["Salinity Tolerance"]),
 
-  herbivory: p => isPositiveOrPossible(p["Herbivory resistance"]),
+  fire: p =>
+    isPositiveOrPossible(p["Fire resistance"]),
 
-  allelopathy: p => isYes(p.Allelopathy),
+  herbivory: p =>
+    isPositiveOrPossible(p["Herbivory resistance"]),
+
+  allelopathy: p =>
+    isYes(p.Allelopathy),
 
   rhizobia: p =>
     isYes(p.Rhizobia) ||
     /rhizobi/i.test(field(p, "Symbionts")),
 
   conservation: isConservationConcern
+
 };
 
 const activeFilters = new Set();
@@ -1045,42 +1170,71 @@ let allPlants = [];
 let visiblePlants = [];
 let focusBeforeDialog = null;
 
-/* ===========================================
+/* ==========================================
    FORMATTING
-   =========================================== */
+   ========================================== */
 
 function niceValue(key, value) {
   let text = clean(value);
 
   if (key === "Red list Assessment") {
     text = text
-      .replace(/not evaluated\s*\(NE\)/i, "Not Evaluated (NE)")
-      .replace(/least concern\s*\(LC\)/i, "Least Concern (LC)");
+      .replace(
+        /not evaluated\s*\(NE\)/i,
+        "Not Evaluated (NE)"
+      )
+      .replace(
+        /least concern\s*\(LC\)/i,
+        "Least Concern (LC)"
+      )
+      .replace(
+        /near threatened\s*\(NT\)/i,
+        "Near Threatened (NT)"
+      );
   }
 
   return text;
 }
 
 function valueColor(key, value) {
-  if (key === "Population Trend") {
-    if (isDeclining(value)) return "danger";
 
-    if (/stable|increas/i.test(value)) return "good";
+  if (key === "Population Trend") {
+    if (isDeclining(value)) {
+      return "danger";
+    }
+
+    if (/stable|increas/i.test(value)) {
+      return "good";
+    }
 
     return "muted";
   }
 
   if (key === "Red list Assessment") {
-    if (isThreatened(value)) return "danger";
+    if (isThreatened(value)) {
+      return "danger";
+    }
 
-    if (/not evaluated/i.test(value)) return "muted";
+    if (isNearThreatened(value)) {
+      return "warning";
+    }
+
+    if (/not evaluated/i.test(value)) {
+      return "muted";
+    }
   }
 
-  if (key === "Fire resistance" ||
-      key === "Anti-herbivory traits") {
+  if (
+    key === "Fire resistance" ||
+    key === "Anti-herbivory traits"
+  ) {
+    if (isYes(value)) {
+      return "good";
+    }
 
-    if (isYes(value)) return "good";
-    if (isPossible(value)) return "warning";
+    if (isPossible(value)) {
+      return "warning";
+    }
   }
 
   return "";
@@ -1089,21 +1243,28 @@ function valueColor(key, value) {
 function trait(label, value, options = {}) {
   if (!clean(value)) return "";
 
-  const color = valueColor(
-    options.statusKey || label,
-    value
-  );
+  const statusKey =
+    options.statusKey || label;
+
+  const color =
+    valueColor(statusKey, value);
+
+  const formattedValue =
+    options.htmlValue !== undefined
+      ? options.htmlValue
+      : escapeHTML(
+          niceValue(statusKey, value)
+        );
 
   return `
     <div class="trait ${options.wide ? "wide" : ""}">
+
       <span class="trait-label">
         ${escapeHTML(label)}
       </span>
 
       <div class="trait-value ${color}">
-        ${escapeHTML(niceValue(
-          options.statusKey || label, value
-        ))}
+        ${formattedValue}
       </div>
 
       ${options.mechanism ? `
@@ -1111,15 +1272,17 @@ function trait(label, value, options = {}) {
           ${escapeHTML(options.mechanism)}
         </div>
       ` : ""}
+
     </div>
   `;
 }
 
-/* ===========================================
+/* ==========================================
    TRAITS
-   =========================================== */
+   ========================================== */
 
 function buildTraits(p) {
+
   const used = new Set([
     "id",
     "scientific_name",
@@ -1142,7 +1305,7 @@ function buildTraits(p) {
 
   const items = [];
 
-  /* Agreed order at the beginning */
+  /* FIRST EIGHT TRAITS IN AGREED ORDER */
 
   const firstFields = [
     "Plant type",
@@ -1161,14 +1324,28 @@ function buildTraits(p) {
     const value = field(p, key);
 
     if (value) {
-      items.push(trait(key, value, {
-        wide: key === "Primary Habitat"
-      }));
+      items.push(
+        trait(key, value, {
+          wide: key === "Primary Habitat"
+        })
+      );
     }
   }
 
-  /* Fire, grazing and allelopathy:
-     status and mechanism in the same box */
+  /* ENDEMISM */
+
+  used.add("Endemism");
+
+  const endemism =
+    field(p, "Endemism");
+
+  if (endemism) {
+    items.push(
+      trait("Endemism", endemism)
+    );
+  }
+
+  /* FIRE, HERBIVORY AND ALLELOPATHY */
 
   const groupedFields = [
     [
@@ -1188,23 +1365,36 @@ function buildTraits(p) {
     ]
   ];
 
-  for (const [key, label, mechanismKey] of groupedFields) {
+  for (
+    const [key, label, mechanismKey]
+    of groupedFields
+  ) {
+
     used.add(key);
     used.add(mechanismKey);
 
-    const value = field(p, key);
-    const mechanism = field(p, mechanismKey);
+    const value =
+      field(p, key);
+
+    const mechanism =
+      field(p, mechanismKey);
 
     if (value || mechanism) {
-      items.push(trait(label, value || "Not assessed", {
-        wide: true,
-        statusKey: label,
-        mechanism
-      }));
+      items.push(
+        trait(
+          label,
+          value || "Not assessed",
+          {
+            wide: true,
+            statusKey: label,
+            mechanism
+          }
+        )
+      );
     }
   }
 
-  /* Remaining characteristics */
+  /* REMAINING CHARACTERISTICS */
 
   const remaining = [
     "Bee plant",
@@ -1220,61 +1410,199 @@ function buildTraits(p) {
     "Cryptophyte",
     "Hemicryptophyte",
     "Chamaephyte",
-    "Nitrogen fixer",
-    "Endemism"
+    "Nitrogen fixer"
   ];
 
   const labels = {
-    "Wind pollinarion": "Wind pollination"
+    "Wind pollinarion": "Wind pollination",
+    "Reclamation plants": "Reclamation plants"
   };
 
   for (const key of remaining) {
     used.add(key);
 
-    const value = field(p, key);
+    const value =
+      field(p, key);
+
     if (!value) continue;
 
-    items.push(trait(labels[key] || key, value, {
-      wide: key === "Pollen / Nectar / Honeydew Production"
-    }));
+    items.push(
+      trait(
+        labels[key] || key,
+        value,
+        {
+          wide:
+            key === "Pollen / Nectar / Honeydew Production"
+        }
+      )
+    );
   }
 
-  /* Other populated CSV fields */
+  /* ADDITIONAL NONEMPTY CSV FIELDS */
 
   for (const key of Object.keys(p)) {
-    if (used.has(key) || !field(p, key)) continue;
 
-    items.push(trait(key, field(p, key), {
-      wide: true
-    }));
+    if (
+      used.has(key) ||
+      !field(p, key)
+    ) {
+      continue;
+    }
+
+    items.push(
+      trait(key, field(p, key), {
+        wide: true
+      })
+    );
   }
 
   return `
     <h3 class="section-heading">Traits</h3>
+
     <div class="traits-grid">
       ${items.join("")}
     </div>
   `;
 }
 
-/* ===========================================
-   PHOTO BUTTONS AND SCIENTIFIC CAPTIONS
-   =========================================== */
+/* ==========================================
+   SCIENTIFIC NAME FORMATTING
+   ========================================== */
 
 function italicizeSpecies(text, scientificName) {
-  const safeText = escapeHTML(text);
-  const safeName = escapeHTML(scientificName);
+  const safeText =
+    escapeHTML(text);
 
-  if (!safeName) return safeText;
+  const safeName =
+    escapeHTML(scientificName);
 
-  return safeText.split(safeName)
+  if (!safeName) {
+    return safeText;
+  }
+
+  return safeText
+    .split(safeName)
     .join(`<i>${safeName}</i>`);
 }
 
+/*
+  Italicize pollinator scientific names,
+  but not insect orders or families.
+
+  Examples:
+
+  Hymenoptera: Apis mellifera
+  becomes
+  Hymenoptera: <i>Apis mellifera</i>
+
+  Diptera: Eristalis sp.
+  becomes
+  Diptera: <i>Eristalis</i> sp.
+*/
+
+function formatPollinators(value) {
+
+  const higherTaxa = new Set([
+    "Hymenoptera",
+    "Diptera",
+    "Lepidoptera",
+    "Coleoptera",
+    "Hemiptera",
+    "Thysanoptera",
+    "Odonata",
+    "Orthoptera",
+    "Neuroptera",
+    "Vespidae",
+    "Calliphoridae",
+    "Apidae",
+    "Andrenidae",
+    "Syrphidae",
+    "Noctuidae",
+    "Formicidae",
+    "Halictidae"
+  ]);
+
+  return clean(value)
+    .split(",")
+    .map(segment => {
+
+      let part =
+        segment.trim();
+
+      if (!part) return "";
+
+      let prefix = "";
+
+      const group =
+        part.match(/^([^:]+):\s*(.*)$/);
+
+      if (group) {
+        prefix =
+          escapeHTML(group[1].trim()) +
+          ": ";
+
+        part = group[2].trim();
+      }
+
+      if (!part) return prefix;
+
+      const match = part.match(
+        /^([A-Z][A-Za-z-]+)(?:\s+([a-z][a-z-]*|sp\.|spp\.))?(.*)$/
+      );
+
+      if (!match) {
+        return prefix + escapeHTML(part);
+      }
+
+      const genus = match[1];
+      const species = match[2] || "";
+      const remainder = match[3] || "";
+
+      if (
+        higherTaxa.has(genus) ||
+        genus.endsWith("idae") ||
+        genus.endsWith("inae")
+      ) {
+        return prefix + escapeHTML(part);
+      }
+
+      if (species === "sp." ||
+          species === "spp.") {
+        return (
+          prefix +
+          `<i>${escapeHTML(genus)}</i> ` +
+          escapeHTML(species + remainder)
+        );
+      }
+
+      const scientific = species
+        ? `${genus} ${species}`
+        : genus;
+
+      return (
+        prefix +
+        `<i>${escapeHTML(scientific)}</i>` +
+        escapeHTML(remainder)
+      );
+
+    })
+    .filter(Boolean)
+    .join(", ");
+}
+
+/* ==========================================
+   PHOTO BUTTONS
+   ========================================== */
+
 function photoButton(
-  urls, index, className, alt,
-  caption = "", scientificName = ""
+  urls,
+  index,
+  className,
+  alt,
+  caption = "",
+  scientificName = ""
 ) {
+
   return `
     <button type="button"
             class="photo-button ${className}"
@@ -1287,86 +1615,126 @@ function photoButton(
       <img loading="lazy"
            src="${escapeHTML(urls[index])}"
            alt="${escapeHTML(alt)}">
+
     </button>
   `;
 }
 
-/* ===========================================
-   SYMBIONT PHOTOGRAPHS
-   =========================================== */
+/* ==========================================
+   AMF AND RHIZOBIAL PHOTOGRAPHS
+   ========================================== */
 
 function symbiontBox(plant, key, title) {
-  const images = imageURLs(plant[`${key}_image`]);
 
-  if (!images.length) return "";
+  const images =
+    imageURLs(plant[`${key}_image`]);
 
-  const scientific = speciesName(plant);
+  if (!images.length) {
+    return "";
+  }
+
+  const scientific =
+    speciesName(plant);
 
   const caption =
     field(plant, `${key}_image_caption`) ||
     (
       key === "AMF"
-      ? "Arbuscules in roots stained with trypan blue, indicating arbuscular mycorrhizal colonization."
-      : `Nodules of ${scientific}, indicating rhizobial symbiosis and nitrogen fixation.`
+        ? "Arbuscules in roots stained with trypan blue, indicating arbuscular mycorrhizal colonization."
+        : `Nodules of ${scientific}, indicating rhizobial symbiosis and nitrogen fixation.`
     );
 
   const main = photoButton(
-    images, 0,
+    images,
+    0,
     "symbiont-photo",
     `Enlarge ${title} photograph`,
-    caption, scientific
+    caption,
+    scientific
   );
 
-  const otherImages = images.length > 1
-    ? `
-      <div class="symbiont-thumbs">
-        ${images.slice(1).map((_, i) =>
-          photoButton(
-            images, i + 1,
-            "symbiont-photo",
-            `Enlarge ${title} photograph ${i + 2}`,
-            caption, scientific
-          )
-        ).join("")}
-      </div>
-    `
-    : "";
+  const otherImages =
+    images.length > 1
+      ? `
+        <div class="symbiont-thumbs">
+
+          ${images.slice(1).map((_, i) =>
+            photoButton(
+              images,
+              i + 1,
+              "symbiont-photo",
+              `Enlarge ${title} photograph ${i + 2}`,
+              caption,
+              scientific
+            )
+          ).join("")}
+
+        </div>
+      `
+      : "";
 
   return `
     <section class="symbiont-box">
+
       <h4>${escapeHTML(title)}</h4>
+
       ${main}
+
       ${otherImages}
+
       <p class="symbiont-caption">
         ${italicizeSpecies(caption, scientific)}
       </p>
+
     </section>
   `;
 }
 
-/* ===========================================
+/* ==========================================
    ASSOCIATIONS
-   =========================================== */
+
+   DISPLAY ORDER:
+
+   1. Symbionts
+   2. AMF photographs, if present
+   3. Rhizobial nodule photographs, if present
+   4. Pollinators
+   ========================================== */
 
 function buildAssociations(plant) {
-  const items = [];
 
-  const symbionts = field(plant, "Symbionts");
-  const pollinators = field(plant, "Pollinators");
+  const symbionts =
+    field(plant, "Symbionts");
+
+  const pollinators =
+    field(plant, "Pollinators");
+
+  let symbiontHTML = "";
 
   if (symbionts) {
-    items.push(trait("Symbionts", symbionts, {
-      wide: true
-    }));
+
+    symbiontHTML = trait(
+      "Symbionts",
+      symbionts,
+      {wide: true}
+    );
+
   } else {
+
     const alternatives = [];
 
-    if (field(plant, "Ericoid mycorrhizal fungi")) {
-      alternatives.push("Ericoid mycorrhizal fungi");
+    if (
+      field(plant, "Ericoid mycorrhizal fungi")
+    ) {
+      alternatives.push(
+        "Ericoid mycorrhizal fungi"
+      );
     }
 
     if (isYes(plant.AMF)) {
-      alternatives.push("Arbuscular mycorrhizal fungi");
+      alternatives.push(
+        "Arbuscular mycorrhizal fungi"
+      );
     }
 
     if (isYes(plant.Rhizobia)) {
@@ -1374,39 +1742,61 @@ function buildAssociations(plant) {
     }
 
     if (alternatives.length) {
-      items.push(trait(
+      symbiontHTML = trait(
         "Symbionts",
         alternatives.join(", "),
         {wide: true}
-      ));
+      );
     }
   }
 
-  if (pollinators) {
-    items.push(trait("Pollinators", pollinators, {
-      wide: true
-    }));
-  }
-
-  /* AMF: Yes and Rhizobia: Yes are deliberately
-     not displayed as separate boxes. */
+  /* MICROSCOPY AND NODULE IMAGES */
 
   const images = [
-    symbiontBox(plant, "AMF", "AMF"),
     symbiontBox(
-      plant, "Rhizobia",
+      plant,
+      "AMF",
+      "AMF"
+    ),
+
+    symbiontBox(
+      plant,
+      "Rhizobia",
       "Nitrogen-Fixing Nodules"
     )
+
   ].filter(Boolean);
 
-  if (!items.length && !images.length) return "";
+  /* POLLINATORS WITH ITALIC SCIENTIFIC NAMES */
+
+  const pollinatorHTML = pollinators
+    ? trait(
+        "Pollinators",
+        pollinators,
+        {
+          wide: true,
+          htmlValue:
+            formatPollinators(pollinators)
+        }
+      )
+    : "";
+
+  if (
+    !symbiontHTML &&
+    !images.length &&
+    !pollinatorHTML
+  ) {
+    return "";
+  }
 
   return `
-    <h3 class="section-heading">Associations</h3>
+    <h3 class="section-heading">
+      Associations
+    </h3>
 
-    ${items.length ? `
+    ${symbiontHTML ? `
       <div class="association-grid">
-        ${items.join("")}
+        ${symbiontHTML}
       </div>
     ` : ""}
 
@@ -1415,18 +1805,29 @@ function buildAssociations(plant) {
         ${images.join("")}
       </div>
     ` : ""}
+
+    ${pollinatorHTML ? `
+      <div class="association-grid">
+        ${pollinatorHTML}
+      </div>
+    ` : ""}
   `;
 }
 
-/* ===========================================
+/* ==========================================
    FULL PLANT POPUP
-   =========================================== */
+   ========================================== */
 
 function buildPlantHTML(plant) {
-  const scientific = speciesName(plant);
 
-  const mainImages = imageURLs(plant.card_image);
-  const gallery = imageURLs(plant.gallery_images);
+  const scientific =
+    speciesName(plant);
+
+  const mainImages =
+    imageURLs(plant.card_image);
+
+  const gallery =
+    imageURLs(plant.gallery_images);
 
   const photoSet = [
     ...mainImages,
@@ -1435,16 +1836,21 @@ function buildPlantHTML(plant) {
 
   const hero = mainImages.length
     ? photoButton(
-        photoSet, 0, "main-photo",
+        photoSet,
+        0,
+        "main-photo",
         `Enlarge ${scientific} photograph`
       )
     : "";
 
   const galleryHTML = gallery.length
     ? `
-      <h3 class="section-heading">Gallery</h3>
+      <h3 class="section-heading">
+        Gallery
+      </h3>
 
       <div class="gallery-row">
+
         ${gallery.map((_, i) =>
           photoButton(
             photoSet,
@@ -1453,6 +1859,7 @@ function buildPlantHTML(plant) {
             `View ${scientific} photograph ${i + 1}`
           )
         ).join("")}
+
       </div>
     `
     : "";
@@ -1461,14 +1868,22 @@ function buildPlantHTML(plant) {
     field(plant, "Common Name"),
     field(plant, "Greek Name"),
     field(plant, "Family")
-  ].filter(Boolean).map(escapeHTML).join(" · ");
+  ]
+    .filter(Boolean)
+    .map(escapeHTML)
+    .join(" · ");
 
   return `
     <div class="dialog-content">
 
       <header class="plant-heading">
-        <h2><i>${escapeHTML(scientific)}</i></h2>
+
+        <h2>
+          <i>${escapeHTML(scientific)}</i>
+        </h2>
+
         <p>${subtitle}</p>
+
       </header>
 
       ${hero}
@@ -1483,51 +1898,83 @@ function buildPlantHTML(plant) {
   `;
 }
 
-/* ===========================================
+/* ==========================================
    POPUP BEHAVIOR
-   =========================================== */
+   ========================================== */
 
-const plantDialog = $("plantDialog");
-const photoLightbox = $("photoLightbox");
+const plantDialog =
+  $("plantDialog");
+
+const photoLightbox =
+  $("photoLightbox");
 
 function openPlant(plant) {
-  focusBeforeDialog = document.activeElement;
+
+  focusBeforeDialog =
+    document.activeElement;
 
   $("plantDialogContent").innerHTML =
     buildPlantHTML(plant);
 
   plantDialog.showModal();
 
-  const url = new URL(location.href);
-  url.searchParams.set("id", plant.id);
+  const url =
+    new URL(location.href);
 
-  history.replaceState(null, "", url);
+  url.searchParams.set(
+    "id",
+    plant.id
+  );
+
+  history.replaceState(
+    null,
+    "",
+    url
+  );
 }
 
 function closePlant() {
-  if (plantDialog.open) plantDialog.close();
+  if (plantDialog.open) {
+    plantDialog.close();
+  }
 }
 
 $("closePlantDialog").addEventListener(
-  "click", closePlant
+  "click",
+  closePlant
 );
 
-plantDialog.addEventListener("click", event => {
-  if (event.target === plantDialog) closePlant();
-});
+plantDialog.addEventListener(
+  "click",
+  event => {
+    if (event.target === plantDialog) {
+      closePlant();
+    }
+  }
+);
 
-plantDialog.addEventListener("close", () => {
-  focusBeforeDialog?.focus?.();
+plantDialog.addEventListener(
+  "close",
+  () => {
 
-  const url = new URL(location.href);
-  url.searchParams.delete("id");
+    focusBeforeDialog?.focus?.();
 
-  history.replaceState(null, "", url);
-});
+    const url =
+      new URL(location.href);
 
-/* ===========================================
+    url.searchParams.delete("id");
+
+    history.replaceState(
+      null,
+      "",
+      url
+    );
+  }
+);
+
+/* ==========================================
    PHOTO LIGHTBOX
-   =========================================== */
+   ========================================== */
 
 let lightboxImages = [];
 let lightboxIndex = 0;
@@ -1535,20 +1982,31 @@ let lightboxText = "";
 let lightboxScientific = "";
 
 function updateLightbox() {
-  const source = lightboxImages[lightboxIndex];
+
+  const source =
+    lightboxImages[lightboxIndex];
+
   if (!source) return;
 
-  $("lightboxImage").src = source;
-  $("lightboxImage").alt = "Enlarged botanical photograph";
+  $("lightboxImage").src =
+    source;
 
-  const counter = lightboxImages.length > 1
-    ? `${lightboxIndex + 1} / ${lightboxImages.length}`
-    : "";
+  $("lightboxImage").alt =
+    "Enlarged botanical photograph";
 
-  $("lightboxCaption").innerHTML = lightboxText
-    ? italicizeSpecies(lightboxText, lightboxScientific) +
-      (counter ? ` · ${counter}` : "")
-    : counter;
+  const counter =
+    lightboxImages.length > 1
+      ? `${lightboxIndex + 1} / ${lightboxImages.length}`
+      : "";
+
+  $("lightboxCaption").innerHTML =
+    lightboxText
+      ? italicizeSpecies(
+          lightboxText,
+          lightboxScientific
+        ) +
+        (counter ? ` · ${counter}` : "")
+      : counter;
 
   $("lightboxPrev").hidden =
     lightboxImages.length < 2;
@@ -1558,9 +2016,15 @@ function updateLightbox() {
 }
 
 function shiftLightbox(direction) {
+
+  if (!lightboxImages.length) return;
+
   lightboxIndex =
-    (lightboxIndex + direction + lightboxImages.length) %
-    lightboxImages.length;
+    (
+      lightboxIndex +
+      direction +
+      lightboxImages.length
+    ) % lightboxImages.length;
 
   updateLightbox();
 }
@@ -1568,17 +2032,25 @@ function shiftLightbox(direction) {
 $("plantDialogContent").addEventListener(
   "click",
   event => {
+
     const button =
-      event.target.closest("button[data-images]");
+      event.target.closest(
+        "button[data-images]"
+      );
 
     if (!button) return;
 
     try {
+
       lightboxImages =
-        JSON.parse(button.dataset.images);
+        JSON.parse(
+          button.dataset.images
+        );
 
       lightboxIndex =
-        Number(button.dataset.index) || 0;
+        Number(
+          button.dataset.index
+        ) || 0;
 
       lightboxText =
         button.dataset.caption || "";
@@ -1587,7 +2059,9 @@ $("plantDialogContent").addEventListener(
         button.dataset.scientific || "";
 
       updateLightbox();
+
       photoLightbox.showModal();
+
     } catch (error) {
       console.error(error);
     }
@@ -1595,215 +2069,343 @@ $("plantDialogContent").addEventListener(
 );
 
 $("lightboxPrev").addEventListener(
-  "click", () => shiftLightbox(-1)
+  "click",
+  () => shiftLightbox(-1)
 );
 
 $("lightboxNext").addEventListener(
-  "click", () => shiftLightbox(1)
+  "click",
+  () => shiftLightbox(1)
 );
 
 $("closePhotoLightbox").addEventListener(
-  "click", () => photoLightbox.close()
+  "click",
+  () => photoLightbox.close()
 );
 
-photoLightbox.addEventListener("click", event => {
-  if (event.target === photoLightbox) {
-    photoLightbox.close();
+photoLightbox.addEventListener(
+  "click",
+  event => {
+    if (event.target === photoLightbox) {
+      photoLightbox.close();
+    }
   }
-});
+);
 
-window.addEventListener("keydown", event => {
-  if (!photoLightbox.open) return;
+window.addEventListener(
+  "keydown",
+  event => {
 
-  if (event.key === "ArrowRight") {
-    shiftLightbox(1);
+    if (!photoLightbox.open) return;
+
+    if (event.key === "ArrowRight") {
+      shiftLightbox(1);
+    }
+
+    if (event.key === "ArrowLeft") {
+      shiftLightbox(-1);
+    }
   }
+);
 
-  if (event.key === "ArrowLeft") {
-    shiftLightbox(-1);
-  }
-});
-
-/* Swipe between images on mobile */
+/* MOBILE SWIPE */
 
 let touchStartX = 0;
 
-photoLightbox.addEventListener("touchstart", event => {
-  touchStartX =
-    event.changedTouches[0]?.screenX || 0;
-}, {passive: true});
+photoLightbox.addEventListener(
+  "touchstart",
+  event => {
 
-photoLightbox.addEventListener("touchend", event => {
-  const difference =
-    (event.changedTouches[0]?.screenX || 0) -
-    touchStartX;
+    touchStartX =
+      event.changedTouches[0]?.screenX || 0;
 
-  if (Math.abs(difference) > 55 &&
-      lightboxImages.length > 1) {
-    shiftLightbox(difference > 0 ? -1 : 1);
-  }
-}, {passive: true});
+  },
+  {passive: true}
+);
 
-/* ===========================================
-   COLOR LABELS ON FILTERED PLANT CARDS
-   =========================================== */
+photoLightbox.addEventListener(
+  "touchend",
+  event => {
+
+    const difference =
+      (
+        event.changedTouches[0]?.screenX || 0
+      ) - touchStartX;
+
+    if (
+      Math.abs(difference) > 55 &&
+      lightboxImages.length > 1
+    ) {
+      shiftLightbox(
+        difference > 0 ? -1 : 1
+      );
+    }
+  },
+  {passive: true}
+);
+
+/* ==========================================
+   FILTER CARD BADGES
+
+   FULL LABELS:
+
+   Fire tolerance: Yes / Possible
+
+   Anti-herbivory traits: Yes / Possible
+   ========================================== */
 
 function cardBadges(plant) {
+
   const badges = [];
 
   const checks = [
-    ["fire", "Fire resistance", "Fire"],
-    ["herbivory", "Herbivory resistance", "Grazing"]
+    [
+      "fire",
+      "Fire resistance",
+      "Fire tolerance"
+    ],
+    [
+      "herbivory",
+      "Herbivory resistance",
+      "Anti-herbivory traits"
+    ]
   ];
 
-  for (const [filter, column, label] of checks) {
-    if (!activeFilters.has(filter)) continue;
+  for (
+    const [filter, column, label]
+    of checks
+  ) {
 
-    const value = field(plant, column);
+    if (!activeFilters.has(filter)) {
+      continue;
+    }
 
-    if (!isPositiveOrPossible(value)) continue;
+    const value =
+      field(plant, column);
+
+    if (!isPositiveOrPossible(value)) {
+      continue;
+    }
 
     badges.push(`
       <span class="status-pill ${
-        isYes(value) ? "yes" : "possible"
+        isYes(value)
+          ? "yes"
+          : "possible"
       }">
-        ${label}: ${escapeHTML(value)}
+        ${escapeHTML(label)}:
+        ${escapeHTML(value)}
       </span>
     `);
   }
+
+  /* CONSERVATION BADGE */
 
   if (
     activeFilters.has("conservation") &&
     isConservationConcern(plant)
   ) {
-    badges.push(`
-      <span class="status-pill danger">
-        ${
-          isDeclining(plant["Population Trend"])
-            ? "Declining population"
-            : "Threatened"
-        }
-      </span>
-    `);
+
+    const redList =
+      field(plant, "Red list Assessment");
+
+    const trend =
+      field(plant, "Population Trend");
+
+    if (isThreatened(redList)) {
+
+      badges.push(`
+        <span class="status-pill danger">
+          Threatened species
+        </span>
+      `);
+
+    }
+
+    if (isDeclining(trend)) {
+
+      badges.push(`
+        <span class="status-pill danger">
+          Declining population
+        </span>
+      `);
+
+    }
+
+    if (isNearThreatened(redList)) {
+
+      badges.push(`
+        <span class="status-pill warning">
+          Near Threatened (NT)
+        </span>
+      `);
+
+    }
   }
 
   return badges.length
-    ? `<div class="card-statuses">${badges.join("")}</div>`
+    ? `
+      <div class="card-statuses">
+        ${badges.join("")}
+      </div>
+    `
     : "";
 }
 
-/* ===========================================
+/* ==========================================
    PLANT GRID
-   =========================================== */
+   ========================================== */
 
 function render(plants) {
+
   visiblePlants = plants.filter(
-    p => p.card_image && p.scientific_name
+    p =>
+      p.card_image &&
+      p.scientific_name
   );
 
-  const html = visiblePlants.map(plant => {
-    const scientific = speciesName(plant);
+  const html =
+    visiblePlants.map(plant => {
 
-    return `
-      <article class="card-animation-layer">
-        <div class="card" data-id="${escapeHTML(plant.id)}">
+      const scientific =
+        speciesName(plant);
 
-          <button class="card-button"
-                  type="button"
-                  data-plant="${escapeHTML(plant.id)}"
-                  aria-label="View ${escapeHTML(scientific)}">
+      return `
+        <article class="card-animation-layer">
 
-            <div class="image-wrap loading">
-              <img loading="lazy"
-                   decoding="async"
-                   src="${escapeHTML(plant.card_image)}"
-                   alt="${escapeHTML(scientific)}">
-            </div>
+          <div class="card"
+               data-id="${escapeHTML(plant.id)}">
 
-            <span class="card-name">
-              <i>${escapeHTML(scientific)}</i>
-            </span>
+            <button class="card-button"
+                    type="button"
+                    data-plant="${escapeHTML(plant.id)}"
+                    aria-label="View ${escapeHTML(scientific)}">
 
-            <span class="card-family">
-              ${escapeHTML(plant.Family)}
-            </span>
+              <div class="image-wrap loading">
 
-            ${cardBadges(plant)}
+                <img loading="lazy"
+                     decoding="async"
+                     src="${escapeHTML(plant.card_image)}"
+                     alt="${escapeHTML(scientific)}">
 
-          </button>
-        </div>
-      </article>
-    `;
-  }).join("");
+              </div>
+
+              <span class="card-name">
+                <i>${escapeHTML(scientific)}</i>
+              </span>
+
+              <span class="card-family">
+                ${escapeHTML(plant.Family)}
+              </span>
+
+              ${cardBadges(plant)}
+
+            </button>
+
+          </div>
+
+        </article>
+      `;
+    }).join("");
 
   $("plantGrid").innerHTML =
     html ||
-    '<p class="error">No plants match your search and filters.</p>';
+    `
+      <p class="error">
+        No plants match your search and filters.
+      </p>
+    `;
 
   $("plantGrid")
     .querySelectorAll(".image-wrap img")
     .forEach(img => {
+
       const finish = () =>
-        img.parentElement.classList.remove("loading");
+        img.parentElement.classList.remove(
+          "loading"
+        );
 
-      if (img.complete) finish();
+      if (img.complete) {
+        finish();
+      }
 
-      img.addEventListener("load", finish, {
-        once: true
-      });
+      img.addEventListener(
+        "load",
+        finish,
+        {once: true}
+      );
 
-      img.addEventListener("error", finish, {
-        once: true
-      });
+      img.addEventListener(
+        "error",
+        finish,
+        {once: true}
+      );
     });
 
   $("statusLine").textContent =
     `${visiblePlants.length} of ${allPlants.length} plants shown`;
 }
 
-/* ===========================================
-   SEARCH AND MULTIPLE FILTERS
-   =========================================== */
+/* ==========================================
+   SEARCH AND COMBINED FILTERS
+   ========================================== */
 
 function applyFilters() {
-  const query = clean(
-    $("searchInput").value
-  ).toLocaleLowerCase();
 
-  const filtered = allPlants.filter(plant => {
-    const searchText = [
-      speciesName(plant),
-      plant["Greek Name"],
-      plant["Common Name"],
-      plant.Family
-    ].join(" ").toLocaleLowerCase();
+  const query =
+    clean(
+      $("searchInput").value
+    ).toLocaleLowerCase();
 
-    const matchesSearch =
-      !query || searchText.includes(query);
+  const filtered =
+    allPlants.filter(plant => {
 
-    const matchesFilters =
-      [...activeFilters].every(key =>
-        filterRules[key](plant)
+      const searchText = [
+        speciesName(plant),
+        plant["Greek Name"],
+        plant["Common Name"],
+        plant.Family
+      ]
+        .join(" ")
+        .toLocaleLowerCase();
+
+      const matchesSearch =
+        !query ||
+        searchText.includes(query);
+
+      const matchesFilters =
+        [...activeFilters].every(
+          key => filterRules[key](plant)
+        );
+
+      return (
+        matchesSearch &&
+        matchesFilters
       );
 
-    return matchesSearch && matchesFilters;
-  });
+    });
 
   render(filtered);
 }
 
 $("searchInput").addEventListener(
-  "input", applyFilters
+  "input",
+  applyFilters
 );
 
 $("filterButtons").addEventListener(
-  "click", event => {
+  "click",
+  event => {
+
     const button =
-      event.target.closest("button[data-filter]");
+      event.target.closest(
+        "button[data-filter]"
+      );
 
     if (!button) return;
 
-    const key = button.dataset.filter;
+    const key =
+      button.dataset.filter;
 
     if (!filterRules[key]) return;
 
@@ -1822,79 +2424,113 @@ $("filterButtons").addEventListener(
   }
 );
 
-$("clearBtn").addEventListener("click", () => {
-  $("searchInput").value = "";
+$("clearBtn").addEventListener(
+  "click",
+  () => {
 
-  activeFilters.clear();
+    $("searchInput").value = "";
 
-  document.querySelectorAll("[data-filter]")
-    .forEach(button =>
-      button.setAttribute("aria-pressed", "false")
-    );
+    activeFilters.clear();
 
-  applyFilters();
-});
+    document
+      .querySelectorAll("[data-filter]")
+      .forEach(button => {
+        button.setAttribute(
+          "aria-pressed",
+          "false"
+        );
+      });
 
-/* ===========================================
+    applyFilters();
+  }
+);
+
+/* ==========================================
    RANDOM PLANT
-   =========================================== */
+   ========================================== */
 
-$("randomBtn").addEventListener("click", () => {
-  if (!visiblePlants.length) return;
+$("randomBtn").addEventListener(
+  "click",
+  () => {
 
-  const plant = visiblePlants[
-    Math.floor(Math.random() * visiblePlants.length)
-  ];
+    if (!visiblePlants.length) return;
 
-  const card = Array.from(
-    document.querySelectorAll(".card")
-  ).find(element =>
-    element.dataset.id === plant.id
-  );
+    const plant =
+      visiblePlants[
+        Math.floor(
+          Math.random() * visiblePlants.length
+        )
+      ];
 
-  if (!card) return;
+    const card =
+      Array.from(
+        document.querySelectorAll(".card")
+      ).find(element =>
+        element.dataset.id === plant.id
+      );
 
-  document.querySelectorAll(".card.picked")
-    .forEach(element =>
-      element.classList.remove("picked")
-    );
+    if (!card) return;
 
-  card.classList.add("picked");
+    document
+      .querySelectorAll(".card.picked")
+      .forEach(element =>
+        element.classList.remove("picked")
+      );
 
-  card.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
+    card.classList.add("picked");
 
-  $("statusLine").textContent =
-    `Random pick: ${speciesName(plant)}`;
-});
+    card.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
 
-/* ===========================================
-   OPEN PLANT WHEN CARD IS CLICKED
-   =========================================== */
+    $("statusLine").textContent =
+      `Random pick: ${speciesName(plant)}`;
+  }
+);
 
-$("plantGrid").addEventListener("click", event => {
-  const button =
-    event.target.closest("button[data-plant]");
+/* ==========================================
+   OPEN PLANT
+   ========================================== */
 
-  if (!button) return;
+$("plantGrid").addEventListener(
+  "click",
+  event => {
 
-  const plant = allPlants.find(
-    p => p.id === button.dataset.plant
-  );
+    const button =
+      event.target.closest(
+        "button[data-plant]"
+      );
 
-  if (plant) openPlant(plant);
-});
+    if (!button) return;
 
-/* ===========================================
+    const plant =
+      allPlants.find(
+        p => p.id === button.dataset.plant
+      );
+
+    if (plant) {
+      openPlant(plant);
+    }
+  }
+);
+
+/* ==========================================
    LOAD DATABASE
-   =========================================== */
+
+   ALL PLANTS ARE SORTED ALPHABETICALLY
+   BY SCIENTIFIC NAME AFTER LOADING
+   ========================================== */
 
 async function initializeDatabase() {
+
   try {
-    $("plantGrid").innerHTML =
-      '<p class="loading">Loading plant database…</p>';
+
+    $("plantGrid").innerHTML = `
+      <p class="loading">
+        Loading plant database…
+      </p>
+    `;
 
     const response = await fetch(
       CSV_URL,
@@ -1907,28 +2543,42 @@ async function initializeDatabase() {
       );
     }
 
-    allPlants = parseCSV(
-      await response.text()
-    );
+    const csvText =
+      await response.text();
 
-    if (!allPlants.length) {
-      throw new Error("No species found in the CSV.");
+    const parsedPlants =
+      parseCSV(csvText);
+
+    if (!parsedPlants.length) {
+      throw new Error(
+        "No species found in the CSV."
+      );
     }
+
+    /* ALPHABETICAL ORDER A–Z */
+
+    allPlants =
+      sortPlantsAlphabetically(parsedPlants);
 
     applyFilters();
 
-    /* Support direct links such as ?id=P03 */
+    /* SUPPORT DIRECT SPECIES LINKS */
 
     const initialId =
-      new URL(location.href).searchParams.get("id");
+      new URL(location.href)
+        .searchParams.get("id");
 
-    const initialPlant = allPlants.find(
-      p => p.id === initialId
-    );
+    const initialPlant =
+      allPlants.find(
+        p => p.id === initialId
+      );
 
-    if (initialPlant) openPlant(initialPlant);
+    if (initialPlant) {
+      openPlant(initialPlant);
+    }
 
   } catch (error) {
+
     console.error(error);
 
     $("plantGrid").innerHTML = `
@@ -1942,22 +2592,40 @@ async function initializeDatabase() {
 
 initializeDatabase();
 
-/* ===========================================
-   ORIGINAL ANIMATED BLOB MENU
-   =========================================== */
+/* ==========================================
+   ANIMATED BLOB MENU
+   ========================================== */
 
 (() => {
-  const menu = $("menu");
-  const blob = $("blob");
-  const blobPath = $("blob-path");
-  const hamburger = document.querySelector(".hamburger");
-  const menuInner = document.querySelector(".menu-inner");
 
-  if (!menu || !blob || !blobPath ||
-      !hamburger || !menuInner) return;
+  const menu =
+    $("menu");
+
+  const blob =
+    $("blob");
+
+  const blobPath =
+    $("blob-path");
+
+  const hamburger =
+    document.querySelector(".hamburger");
+
+  const menuInner =
+    document.querySelector(".menu-inner");
+
+  if (
+    !menu ||
+    !blob ||
+    !blobPath ||
+    !hamburger ||
+    !menuInner
+  ) {
+    return;
+  }
 
   const VB_W = 60;
   const VB_H = 1000;
+
   const anchorDistance = 120;
   const curviness = 65;
   const hoverZone = 150;
@@ -1976,18 +2644,28 @@ initializeDatabase();
     a + (b - a) * t;
 
   function getPeek() {
-    const raw = getComputedStyle(
-      document.documentElement
-    ).getPropertyValue("--peek");
 
-    const n = parseFloat(raw);
+    const raw =
+      getComputedStyle(
+        document.documentElement
+      ).getPropertyValue("--peek");
 
-    return Number.isFinite(n) ? n : 22;
+    const n =
+      parseFloat(raw);
+
+    return Number.isFinite(n)
+      ? n
+      : 22;
   }
 
   function setMenu(open) {
+
     expanded = open;
-    menu.classList.toggle("expanded", open);
+
+    menu.classList.toggle(
+      "expanded",
+      open
+    );
 
     hamburger.setAttribute(
       "aria-expanded",
@@ -2022,52 +2700,113 @@ initializeDatabase();
     () => setMenu(true)
   );
 
-  menu.addEventListener("focusout", event => {
-    if (!menu.contains(event.relatedTarget)) {
-      setMenu(false);
+  menu.addEventListener(
+    "focusout",
+    event => {
+
+      if (!menu.contains(event.relatedTarget)) {
+        setMenu(false);
+      }
     }
-  });
+  );
 
-  window.addEventListener("pointermove", event => {
-    mouseX = event.clientX;
-    mouseYpx = event.clientY;
-  }, {passive: true});
+  window.addEventListener(
+    "pointermove",
+    event => {
 
-  window.addEventListener("resize", () => {
-    peek = getPeek();
-  });
+      mouseX =
+        event.clientX;
+
+      mouseYpx =
+        event.clientY;
+    },
+    {passive: true}
+  );
+
+  window.addEventListener(
+    "resize",
+    () => {
+      peek = getPeek();
+    }
+  );
 
   function tick() {
-    const vh = Math.max(1, window.innerHeight);
+
+    const vh =
+      Math.max(
+        1,
+        window.innerHeight
+      );
 
     const minY =
       anchorDistance / VB_H * vh;
 
     const maxY =
-      (VB_H - anchorDistance) / VB_H * vh;
+      (
+        VB_H - anchorDistance
+      ) / VB_H * vh;
 
     const clampedY =
-      Math.min(maxY, Math.max(minY, mouseYpx));
+      Math.min(
+        maxY,
+        Math.max(
+          minY,
+          mouseYpx
+        )
+      );
 
-    yPx = lerp(yPx, clampedY, .18);
+    yPx =
+      lerp(
+        yPx,
+        clampedY,
+        .18
+      );
 
     hamburger.style.top =
-      (yPx - (hamburger.offsetHeight || 26) / 2) + "px";
+      (
+        yPx -
+        (
+          hamburger.offsetHeight || 26
+        ) / 2
+      ) + "px";
 
-    const yVB = yPx / vh * VB_H;
+    const yVB =
+      yPx / vh * VB_H;
 
-    if (expanded || mouseX > hoverZone) {
+    if (
+      expanded ||
+      mouseX > hoverZone
+    ) {
+
       targetX = 0;
+
     } else {
+
       const raw =
-        -((VB_W + expandAmount) / 100) *
-        (mouseX - hoverZone);
+        -(
+          (
+            VB_W + expandAmount
+          ) / 100
+        ) * (
+          mouseX - hoverZone
+        );
 
       targetX =
-        Math.max(-maxPull, Math.min(0, raw));
+        Math.max(
+          -maxPull,
+          Math.min(
+            0,
+            raw
+          )
+        );
     }
 
-    curveX = lerp(curveX, targetX, .12);
+    curveX =
+      lerp(
+        curveX,
+        targetX,
+        .12
+      );
 
     const d =
       "M" + VB_W + "," + VB_H +
@@ -2084,15 +2823,22 @@ initializeDatabase();
       "," + (yVB + anchorDistance * 2) +
       "V" + VB_H + "z";
 
-    blobPath.setAttribute("d", d);
+    blobPath.setAttribute(
+      "d",
+      d
+    );
 
     blob.style.width =
-      (peek + Math.abs(curveX)) + "px";
+      (
+        peek +
+        Math.abs(curveX)
+      ) + "px";
 
     requestAnimationFrame(tick);
   }
 
   requestAnimationFrame(tick);
+
 })();
 </script>
 
