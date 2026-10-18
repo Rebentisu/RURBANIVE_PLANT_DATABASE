@@ -1,701 +1,2100 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Plant Species Database – Milos Restoration</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Species Database – Milos Restoration</title>
 
-  <style>
-    @import "https://unpkg.com/open-props" layer(design.system);
-    @import "https://unpkg.com/open-props/normalize.min.css" layer(demo.support);
+<style>
+@import url("https://unpkg.com/open-props");
 
-    :root{
-      --menuW: 300px;
-      --peek: 22px;
+:root {
+  --menuW: 300px;
+  --peek: 22px;
+  --g-dark: #326450;
+  --g-light: #A5BE3C;
+  --y-accent: #ECBF00;
+  --ink: #212125;
+  --danger: #ad2839;
+  --success: #236c4b;
+  --warning: #946000;
+  --site-bg: radial-gradient(
+    circle at 50% 50%,
+    #eaf3ef 0%, #d6e7df 18%,
+    #c2dbd0 35%, #b2d0c3 52%
+  );
+}
 
-      /* Brand palette */
-      --g-dark: #326450;
-      --g-light: #A5BE3C;
-      --y-accent: #ECBF00;
-      --ink: #212125;
+* { box-sizing: border-box; }
 
-      --site-bg: radial-gradient(
-        circle at 50% 50%,
-        #eaf3ef 0%,
-        #d6e7df 18%,
-        #c2dbd0 35%,
-        #b2d0c3 52%
-      );
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
 
-    *{ box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  font-family: system-ui, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--site-bg);
+  background-attachment: fixed;
+}
 
-    html, body{
-      height: 100%;
-      margin: 0;
-      background: var(--site-bg);
-    }
+button, input { font: inherit; }
+button { cursor: pointer; }
 
-    body{
-      min-height: 100vh;
-      font-family: system-ui, Arial, sans-serif;
-      color: var(--ink);
-      background: var(--site-bg);
-      background-attachment: fixed;
-    }
+/* PAGE */
 
-    .page{
-      width: min(1400px, 100%);
-      margin-inline: auto;
-      padding: 28px 24px 80px;
-      padding-left: calc(24px + var(--peek));
-    }
+.page {
+  width: min(1400px, 100%);
+  margin-inline: auto;
+  padding: 28px 24px 80px;
+  padding-left: calc(24px + var(--peek));
+}
 
-    .page-header{
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 18px;
-      align-items: start;
-      width: min(1200px, 100%);
-      margin: 10px auto 18px;
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.35);
-      border: 1px solid rgba(0,0,0,0.06);
-      backdrop-filter: blur(8px);
-    }
+.page-header {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+  align-items: start;
+  width: min(1200px, 100%);
+  margin: 10px auto 18px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.35);
+  border: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(8px);
+}
 
-    @media (max-width: 900px){
-      .page-header{ grid-template-columns: 1fr; }
-    }
+.header-left h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 3vw, 40px);
+}
 
-    .header-left h1{
-      margin: 0 0 8px;
-      font-size: clamp(26px, 3vw, 40px);
-      letter-spacing: 0.2px;
-    }
+.header-left p {
+  margin: 0;
+  line-height: 1.45;
+  color: #43584d;
+}
 
-    .header-left p{
-      margin: 0;
-      line-height: 1.35;
-      color: color-mix(in srgb, var(--ink), #ffffff 45%);
-    }
+/* SEARCH AND FILTERS */
 
-    .controls{
-      display: grid;
-      gap: 10px;
-    }
+.controls {
+  display: grid;
+  gap: 10px;
+}
 
-    .controls input[type="search"]{
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,0.14);
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(6px);
-      outline: none;
-    }
+.controls input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: rgba(255,255,255,.85);
+}
 
-    .controls input[type="search"]:focus{
-      border-color: color-mix(in srgb, var(--g-dark), white 25%);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--g-light), transparent 70%);
-    }
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
-    .button-row{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.button-row button {
+  padding: 9px 11px;
+  border-radius: 12px;
+  border: 1px solid #b9ccbf;
+  background: rgba(255,255,255,.85);
+  color: #263c30;
+  font-size: 12px;
+  transition: background .15s, transform .15s;
+}
 
-    .controls button{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,0.14);
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(6px);
-      cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-      font-size: 14px;
-    }
+.button-row button:hover {
+  transform: translateY(-1px);
+}
 
-    .controls button:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
+.button-row button[aria-pressed="true"] {
+  background: var(--g-dark);
+  color: white;
+  border-color: var(--g-dark);
+}
 
-    .controls button[aria-pressed="true"]{
-      border-color: color-mix(in srgb, var(--y-accent), black 10%);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--y-accent), transparent 70%);
-    }
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--y-accent);
+  outline-offset: 2px;
+}
 
-    .status-line{
-      margin-top: 8px;
-      font-size: 13px;
-      color: color-mix(in srgb, var(--ink), #ffffff 55%);
-    }
+.status-line {
+  min-height: 18px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #516358;
+}
 
-    #menu{
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: var(--menuW);
-      height: 100%;
-      background: var(--g-dark);
-      z-index: 30;
-      overflow: visible;
-      transform: translateX(calc(-100% + var(--peek)));
-      transition: transform 900ms cubic-bezier(0.19, 1, 0.22, 1);
-    }
+/* ORIGINAL BLOB MENU */
 
-    #menu.expanded{ transform: translateX(0); }
+#menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--menuW);
+  height: 100%;
+  background: var(--g-dark);
+  z-index: 30;
+  overflow: visible;
+  transform: translateX(calc(-100% + var(--peek)));
+  transition: transform 900ms cubic-bezier(.19,1,.22,1);
+}
 
-    .menu-inner{
-      position: relative;
-      height: 100%;
-      z-index: 10;
-      padding: 18px 0 0;
-    }
+#menu.expanded {
+  transform: translateX(0);
+}
 
-    .brand{
-      width: 100%;
-      padding: 4px 18px 0px;
-    }
+.menu-inner {
+  position: relative;
+  height: 100%;
+  z-index: 10;
+  padding: 18px 0 0;
+}
 
-    .brand-logo{
-      display: block;
-      width: min(210px, 80%);
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
-    }
+.brand {
+  width: 100%;
+  padding: 4px 18px 0;
+}
 
-    .menu-inner ul{
-      margin: 0;
-      padding: 10px 0 0;
-      list-style: none;
-      width: 80%;
-      margin-left: 10%;
-    }
+.brand-logo {
+  display: block;
+  width: min(210px, 80%);
+  height: auto;
+  object-fit: contain;
+}
 
-    .menu-inner li{
-      color: rgba(255,255,255,0.92);
-      padding: 16px 0;
-      font-size: 18px;
-      letter-spacing: 0.2px;
-    }
+.menu-inner ul {
+  margin: 0 10%;
+  padding: 10px 0 0;
+  list-style: none;
+  width: 80%;
+}
 
-    .menu-inner li:hover{ color: var(--y-accent); }
-    .menu-inner li a{ color: inherit; text-decoration: none; }
+.menu-inner li {
+  color: white;
+  padding: 16px 0;
+  font-size: 18px;
+}
 
-    #blob{
-      position: absolute;
-      top: 0;
-      right: calc(-1 * var(--peek));
-      width: var(--peek);
-      min-width: var(--peek);
-      height: 100%;
-      z-index: 5;
-      pointer-events: none;
-      overflow: visible;
-      display: block;
-    }
+.menu-inner li:hover {
+  color: var(--y-accent);
+}
 
-    #blob-path{ fill: var(--g-dark); }
+.menu-inner a {
+  color: inherit;
+  text-decoration: none;
+}
 
-    .hamburger{
-      position: absolute;
-      right: calc(-1 * var(--peek) + 10px);
-      width: 34px;
-      height: 26px;
-      border: 0;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-      z-index: 20;
-    }
+#blob {
+  position: absolute;
+  top: 0;
+  right: calc(-1 * var(--peek));
+  width: var(--peek);
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  overflow: visible;
+}
 
-    .hamburger .line{
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--y-accent);
-      border-radius: 999px;
-    }
+#blob-path {
+  fill: var(--g-dark);
+}
 
-    .hamburger .line:nth-child(1){ top: 0; }
-    .hamburger .line:nth-child(2){ top: 50%; transform: translateY(-50%); }
-    .hamburger .line:nth-child(3){ bottom: 0; }
+.hamburger {
+  position: absolute;
+  right: calc(-1 * var(--peek) + 10px);
+  width: 34px;
+  height: 26px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  z-index: 20;
+}
 
-    @keyframes slide-in {
-      from {
-        scale: .85;
-        rotate: calc((var(--side, 1) * (5deg * var(--amp, 1))));
-      }
-    }
+.hamburger .line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--y-accent);
+  border-radius: 999px;
+}
 
-    @layer demo {
-      .card-animation-layer {
-        @media (prefers-reduced-motion: no-preference) {
-          @supports (animation-timeline: view()) {
-            animation: slide-in linear both;
-            animation-timeline: view();
-            animation-range: cover 0% contain 15%;
-          }
-        }
-      }
-    }
+.hamburger .line:nth-child(1) { top: 0; }
+.hamburger .line:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.hamburger .line:nth-child(3) { bottom: 0; }
 
-    #plantGrid{
-      --cols: 2;
-      display: grid;
-      grid-template-columns: repeat(var(--cols), minmax(0, var(--size-content-1)));
-      gap: var(--size-5);
-      padding-inline: var(--size-5);
-      padding-block: 18px 60px;
-      place-items: start;
-      justify-content: center;
-    }
+/* PLANT CARDS */
 
-    @media (min-width: 720px){
-      #plantGrid{ --cols: 4; }
-    }
+#plantGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding: 18px 8px 55px;
+  align-items: stretch;
+}
 
-    @media (min-width: 1200px){
-      #plantGrid{ --cols: 6; }
-    }
+.card-animation-layer {
+  min-width: 0;
+}
 
-    @media (min-width: 1920px){
-      #plantGrid{ --cols: 8; }
-    }
+.card {
+  height: 100%;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(0,0,0,.08);
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(27,53,41,.12);
+  transition: transform .18s, box-shadow .18s;
+}
 
-    #plantGrid > .card-animation-layer{
-      display: grid;
-      gap: var(--size-2);
-    }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(27,53,41,.2);
+}
 
-    #plantGrid > .card-animation-layer:nth-of-type(2n + 1){
-      transform-origin: 25vw 100%;
-      --side: -1;
-    }
+.card.picked {
+  outline: 3px solid var(--y-accent);
+}
 
-    #plantGrid > .card-animation-layer:nth-of-type(2n){
-      transform-origin: -25vw 100%;
-      --side: 1;
-    }
+.card-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
 
-    .card{
-      background: rgba(255,255,255,0.85);
-      border: 1px solid rgba(0,0,0,0.08);
-      padding: var(--size-3);
-      border-radius: var(--radius-4);
-      box-shadow: var(--shadow-4);
-      backdrop-filter: blur(6px);
-      transition: transform 180ms ease, box-shadow 180ms ease;
-    }
+.image-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #d8e6db;
+  border-radius: 10px;
+}
 
-    .card:hover{
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-5);
-    }
+.image-wrap.loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg, transparent, rgba(255,255,255,.6), transparent
+  );
+  animation: shimmer 1.1s infinite;
+}
 
-    .card p{
-      margin: 0;
-      line-height: 1.25;
-      color: color-mix(in srgb, var(--ink), #ffffff 35%);
-    }
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
 
-    .card a{ color: inherit; text-decoration: none; }
-    .card a:hover{ text-decoration: underline; }
+.image-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .22s;
+}
 
-    .card.picked{
-      outline: 3px solid color-mix(in srgb, var(--y-accent), white 15%);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.16);
-    }
+.card:hover .image-wrap img {
+  transform: scale(1.03);
+}
 
-    .image-wrap{
-      position: relative;
-      border-radius: var(--radius-3);
-      overflow: hidden;
-      background: rgba(0,0,0,0.04);
-    }
+.card-name {
+  display: block;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.3;
+}
 
-    .image-wrap.loading::before{
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        rgba(255,255,255,0.0) 0%,
-        rgba(255,255,255,0.55) 50%,
-        rgba(255,255,255,0.0) 100%
-      );
-      transform: translateX(-100%);
-      animation: shimmer 1.1s infinite;
-    }
+.card-family {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #576d60;
+}
 
-    @keyframes shimmer{
-      to { transform: translateX(100%); }
-    }
+.card-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
 
-    .image-wrap img{
-      background-color: rgba(0,0,0,0.03);
-      border-radius: var(--radius-3);
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 220ms ease;
-    }
+.status-pill {
+  padding: 4px 7px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+}
 
-    .card:hover .image-wrap img{
-      transform: scale(1.03);
-    }
+.status-pill.yes {
+  color: var(--success);
+  background: #e1f3e7;
+}
 
-    .loading, .error{
-      color: color-mix(in srgb, var(--ink), #ffffff 35%);
-      font-size: 18px;
-      padding: 16px;
-      text-align: center;
-    }
-  
-    /* New ecological species modal + gallery; the original site styles above stay intact. */
-    .card-button {display:block;width:100%;text-align:left;border:0;padding:0;background:transparent;color:inherit;cursor:pointer}
-    .card-button:focus-visible, .gallery-thumb:focus-visible, .symbiont-photo:focus-visible {outline:3px solid var(--y-accent);outline-offset:3px}
-    .card-title {display:block;font-style:italic;font-weight:700;margin-top:10px;font-size:14px;line-height:1.3}
-    .card-family {display:block;font-size:12px;color:#50665b;margin-top:4px}
-    .card-button .image-wrap img {height:auto;object-fit:contain}
-    .card-button .image-wrap {width:100%}
-    .database-footer{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:12px;color:#40594d}.database-footer a{color:var(--g-dark)}
-dialog{border:0;padding:0;color:var(--ink)}dialog::backdrop{background:#091b16b8;backdrop-filter:blur(5px)}body:has(dialog[open]){overflow:hidden}.plant-dialog{width:min(1060px,calc(100vw - 28px));max-height:min(92dvh,950px);border-radius:22px;box-shadow:0 25px 90px #0006;background:#f6faf7;overflow:auto}.dialog-close,.lightbox-close{position:sticky;float:right;top:12px;margin-right:12px;z-index:3;background:#fff;border:1px solid #d4ded7;border-radius:50%;width:40px;height:40px;font-size:27px;line-height:1}.dialog-content{padding:32px}.plant-heading h2{font-size:clamp(26px,3vw,37px);font-style:italic;color:var(--g-dark);margin:0 0 5px}.plant-heading p{margin:0;color:#66756d}.main-photo{display:block;width:100%;padding:0;border:0;border-radius:16px;overflow:hidden;background:#d5e3db;margin:20px 0 12px;max-height:390px}.main-photo img{width:100%;height:auto;max-height:390px;object-fit:contain;display:block}.photo-collection h3,.symbionts-title,.traits-title{color:var(--g-dark);font-size:19px;margin:24px 0 12px}.gallery-row{display:flex;gap:10px;overflow-x:auto;padding:3px 2px 10px}.gallery-thumb{width:124px;height:102px;flex:none;padding:0;border:2px solid transparent;border-radius:11px;overflow:hidden;background:#dae9de}.gallery-thumb:hover{border-color:var(--g-light)}.gallery-thumb img{height:100%;width:100%;object-fit:cover}.traits-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.trait{background:#fff;border:1px solid #d9e6dc;border-radius:12px;padding:12px 14px;overflow-wrap:anywhere;min-width:0}.trait-label{display:block;font-size:11px;letter-spacing:.045em;text-transform:uppercase;color:#577365;margin-bottom:5px;font-weight:700}.trait-value{font-size:14px;line-height:1.5;white-space:pre-wrap}.trait-value em{font-style:italic}.trait.span-two{grid-column:1/-1}.symbiont-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.symbiont-box{padding:14px;border-radius:14px;background:#fff;border:1px solid #d9e6dc}.symbiont-box h4{margin:0 0 9px;font-size:16px;color:var(--g-dark)}.symbiont-photo{padding:0;border:0;border-radius:10px;overflow:hidden;background:#e8f0e9;display:block;width:100%}.symbiont-photo img{width:100%;height:150px;object-fit:contain;display:block}.symbiont-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.symbiont-thumbs .symbiont-photo{width:72px}.symbiont-thumbs img{height:64px}.symbiont-caption{margin:10px 0 0;font-size:12px;line-height:1.5;color:#51625a}.photo-lightbox{width:min(1200px,calc(100vw - 16px));height:min(95dvh,960px);background:#101915;border-radius:16px;overflow:hidden;color:#fff}.photo-lightbox .lightbox-close{position:absolute;top:8px;right:8px;margin:0;background:#fff}.lightbox-figure{margin:0;padding:58px 56px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}.lightbox-figure img{object-fit:contain;max-width:100%;max-height:calc(100% - 55px)}.lightbox-figure figcaption{text-align:center;font-size:14px;color:#eee}.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#ffffff26;color:#fff;border-radius:8px;font-size:40px;padding:3px 9px}.lightbox-prev{left:6px}.lightbox-next{right:6px}.lightbox-arrow[hidden]{display:none}
+.status-pill.possible {
+  color: var(--warning);
+  background: #fff0ce;
+}
 
-    @media(max-width:640px){
-      .page{padding:16px 12px 50px;padding-left:calc(12px + var(--peek))}
-      .dialog-content{padding:22px 14px}
-      .traits-grid,.symbiont-grid{grid-template-columns:1fr}
-      .trait.span-two{grid-column:auto}
-      .lightbox-figure{padding:60px 36px 20px}
-      .gallery-thumb{width:104px;height:88px}
-    }
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.status-pill.danger {
+  color: var(--danger);
+  background: #ffe3e6;
+}
 
-  </style>
+.loading, .error {
+  grid-column: 1 / -1;
+  padding: 20px;
+  text-align: center;
+  color: #485b50;
+}
+
+/* PLANT DETAILS POPUP */
+
+dialog {
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+}
+
+dialog::backdrop {
+  background: rgba(9,27,22,.77);
+  backdrop-filter: blur(5px);
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+#plantDialog {
+  width: min(1060px, calc(100vw - 24px));
+  max-height: 92dvh;
+  overflow: auto;
+  border-radius: 20px;
+  background: #f5faf7;
+  box-shadow: 0 25px 90px rgba(0,0,0,.4);
+}
+
+.dialog-close {
+  position: sticky;
+  float: right;
+  top: 12px;
+  z-index: 3;
+  margin: 12px 12px -52px 0;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #cadacc;
+  border-radius: 50%;
+  background: white;
+  font-size: 27px;
+}
+
+.dialog-content {
+  padding: 30px;
+}
+
+.plant-heading h2 {
+  margin: 0 0 6px;
+  color: var(--g-dark);
+  font-size: clamp(27px, 3vw, 38px);
+  font-style: italic;
+}
+
+.plant-heading p {
+  margin: 0;
+  color: #5a6f61;
+}
+
+.section-heading {
+  margin: 25px 0 12px;
+  color: var(--g-dark);
+  font-size: 20px;
+}
+
+/* GALLERY */
+
+.photo-button {
+  border: 0;
+  padding: 0;
+  cursor: zoom-in;
+  background: #dfeae3;
+}
+
+.main-photo {
+  display: block;
+  width: 100%;
+  max-height: 380px;
+  overflow: hidden;
+  margin: 20px 0 12px;
+  border-radius: 15px;
+}
+
+.main-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: contain;
+}
+
+.gallery-row {
+  display: flex;
+  gap: 10px;
+  padding: 2px 2px 10px;
+  overflow-x: auto;
+}
+
+.gallery-thumb {
+  width: 122px;
+  height: 100px;
+  flex: 0 0 auto;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gallery-thumb:hover {
+  border-color: var(--g-light);
+}
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TRAITS AND ASSOCIATIONS */
+
+.traits-grid,
+.association-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+}
+
+.trait {
+  min-width: 0;
+  padding: 12px 14px;
+  background: white;
+  border: 1px solid #dae6de;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.trait.wide {
+  grid-column: 1 / -1;
+}
+
+.trait-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #577365;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.trait-value {
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.trait-value.good {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.trait-value.warning {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.trait-value.danger {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.trait-value.muted {
+  color: #737d77;
+}
+
+.trait-mechanism {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #46594d;
+  white-space: pre-wrap;
+}
+
+/* SYMBIONT IMAGES */
+
+.symbiont-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.symbiont-box {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #d9e6dc;
+  border-radius: 14px;
+  background: white;
+}
+
+.symbiont-box h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: var(--g-dark);
+}
+
+.symbiont-photo {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.symbiont-photo img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+}
+
+.symbiont-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.symbiont-thumbs .symbiont-photo {
+  width: 76px;
+}
+
+.symbiont-thumbs img {
+  height: 64px;
+}
+
+.symbiont-caption {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #526157;
+}
+
+/* FULLSCREEN IMAGE VIEWER */
+
+#photoLightbox {
+  width: min(1200px, calc(100vw - 16px));
+  height: min(95dvh, 960px);
+  background: #101915;
+  color: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  font-size: 27px;
+}
+
+.lightbox-figure {
+  margin: 0;
+  padding: 52px 56px 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.lightbox-figure img {
+  max-width: 100%;
+  max-height: calc(100% - 70px);
+  object-fit: contain;
+}
+
+.lightbox-figure figcaption {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255,255,255,.15);
+  color: white;
+  font-size: 40px;
+}
+
+.lightbox-prev { left: 6px; }
+.lightbox-next { right: 6px; }
+.lightbox-arrow[hidden] { display: none; }
+
+/* FOOTER */
+
+.database-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: #40594d;
+}
+
+.database-footer a {
+  color: var(--g-dark);
+}
+
+/* RESPONSIVE */
+
+@media (min-width: 720px) {
+  #plantGrid {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  #plantGrid {
+    grid-template-columns: repeat(6,minmax(0,1fr));
+  }
+}
+
+@media (min-width: 1920px) {
+  #plantGrid {
+    grid-template-columns: repeat(8,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 16px 12px 50px;
+    padding-left: calc(12px + var(--peek));
+  }
+
+  #plantGrid { gap: 10px; }
+  .card { padding: 8px; }
+  .card-name { font-size: 13px; }
+  .dialog-content { padding: 22px 14px; }
+
+  .traits-grid,
+  .association-grid,
+  .symbiont-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trait.wide { grid-column: auto; }
+
+  .lightbox-figure {
+    padding: 60px 36px 20px;
+  }
+
+  .gallery-thumb {
+    width: 106px;
+    height: 86px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div id="menu">
-    <button class="hamburger" type="button" aria-label="Toggle menu" aria-controls="menuLinks" aria-expanded="false">
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </button>
 
-    <div class="menu-inner">
-      <div class="brand">
-        <a href="https://rurbanive-project.eu/"
-           target="_blank"
-           rel="noopener noreferrer"
-           aria-label="Visit the RURBANIVE project website">
-          <img
-            class="brand-logo"
-            src="https://zenodo.org/records/18361008/files/RURBANIVE_stroke.png?download=1"
-            alt="RURBANIVE – Rural Urban Immersiveness"
-            loading="eager"
-          />
-        </a>
-      </div>
+<!-- RURBANIVE NAVIGATION -->
 
-      <ul id="menuLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="plant-database.html" aria-current="page">Plant Database</a></li>
-        <li><a href="restoration-protocols.html">Restoration Protocols</a></li>
-        <li><a href="legislation.html">Legislation</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
+<div id="menu">
+  <button class="hamburger" type="button"
+          aria-label="Toggle menu"
+          aria-expanded="false">
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </button>
+
+  <div class="menu-inner">
+    <div class="brand">
+      <a href="https://rurbanive-project.eu/"
+         target="_blank"
+         rel="noopener noreferrer">
+        <img class="brand-logo"
+             src="https://zenodo.org/records/18361008/files/RURBANIVE_stroke.png?download=1"
+             alt="RURBANIVE">
+      </a>
     </div>
 
-    <svg id="blob" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 1000" preserveAspectRatio="none">
-      <path id="blob-path" d=""></path>
-    </svg>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="plant-database.html" aria-current="page">Plant Database</a></li>
+      <li><a href="restoration-protocols.html">Restoration Protocols</a></li>
+      <li><a href="legislation.html">Legislation</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
   </div>
 
-  <main class="page">
-    <header class="page-header">
-      <div class="header-left">
-        <h1>Plant Species Database</h1>
-        <p>
-          A collection of plant species applied in ecological restoration on Milos Island following quarrying activities,
-          aimed at rehabilitating degraded landscapes and supporting ecosystem recovery. The database primarily includes
-          indigenous species adapted to local conditions; some of these species are also edible, highlighting their cultural
-          and practical value.
-        </p>
-      </div>
+  <svg id="blob" viewBox="0 0 60 1000"
+       preserveAspectRatio="none"
+       aria-hidden="true">
+    <path id="blob-path" d=""></path>
+  </svg>
+</div>
 
-      <div class="header-right">
-        <div class="controls" role="search">
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Search by scientific name, Greek name, or family…"
-            aria-label="Search plants"
-            autocomplete="off"
-          />
+<!-- PAGE -->
 
-          <div class="button-row">
-            <button id="edibleBtn" type="button" aria-pressed="false" title="Show edible plants only">
-              Edible
-            </button>
+<main class="page">
 
-            <button id="beeBtn" type="button" aria-pressed="false" title="Show bee-friendly plants only">
-              Bee plants
-            </button>
+  <header class="page-header">
 
-            <button id="randomBtn" type="button" title="Pick a random plant">
-              Random
-            </button>
+    <div class="header-left">
+      <h1>Plant Species Database</h1>
+      <p>
+        A collection of plant species applied in ecological restoration
+        on Milos Island following quarrying activities, aimed at
+        rehabilitating degraded landscapes and supporting ecosystem
+        recovery. The database primarily includes indigenous species
+        adapted to local conditions; some of these species are also
+        edible, highlighting their cultural and practical value.
+      </p>
+    </div>
 
-            <button id="clearBtn" type="button" title="Clear search and filters">
-              Clear
-            </button>
-          </div>
+    <div class="header-right">
+      <div class="controls" role="search">
+
+        <input id="searchInput"
+               type="search"
+               placeholder="Search by scientific name, Greek name, or family…"
+               aria-label="Search plants"
+               autocomplete="off">
+
+        <div class="button-row" id="filterButtons">
+
+          <button data-filter="edible" aria-pressed="false">
+            Edible
+          </button>
+
+          <button data-filter="bee" aria-pressed="false">
+            Bee plants
+          </button>
+
+          <button data-filter="salinity" aria-pressed="false">
+            Salinity tolerance
+          </button>
+
+          <button data-filter="fire" aria-pressed="false">
+            Fire resistance
+          </button>
+
+          <button data-filter="herbivory" aria-pressed="false">
+            Anti-herbivory traits
+          </button>
+
+          <button data-filter="allelopathy" aria-pressed="false">
+            Allelopathy
+          </button>
+
+          <button data-filter="rhizobia" aria-pressed="false">
+            Rhizobial association
+          </button>
+
+          <button data-filter="conservation" aria-pressed="false">
+            Conservation concern
+          </button>
+
+          <button id="randomBtn" type="button">Random</button>
+          <button id="clearBtn" type="button">Clear</button>
+
         </div>
-
-        <div id="statusLine" class="status-line" aria-live="polite"></div>
       </div>
-    </header>
 
-    <section id="plantGrid" aria-label="Plant cards"></section>
-  </main>
+      <div id="statusLine" class="status-line"
+           role="status" aria-live="polite"></div>
+    </div>
 
+  </header>
 
-  <!-- Species profile, opened from the existing cards -->
-  <dialog id="plantDialog" class="plant-dialog" aria-label="Plant species information">
-    <button id="closePlantDialog" class="dialog-close" type="button" aria-label="Close plant details">×</button>
-    <div id="plantDialogContent"></div>
-  </dialog>
-  <dialog id="photoLightbox" class="photo-lightbox" aria-label="Expanded plant or symbiont photograph">
-    <button class="lightbox-close" id="closePhotoLightbox" type="button" aria-label="Close enlarged photograph">×</button>
-    <button class="lightbox-arrow lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous photograph">‹</button>
-    <figure class="lightbox-figure">
-      <img id="lightboxImage" alt="">
-      <figcaption id="lightboxCaption"></figcaption>
-    </figure>
-    <button class="lightbox-arrow lightbox-next" id="lightboxNext" type="button" aria-label="Next photograph">›</button>
-  </dialog>
-  <footer class="database-footer" style="width:min(1200px,100%);margin:0 auto 24px;padding:0 24px">
+  <section id="plantGrid" aria-label="Plant cards"></section>
+
+  <footer class="database-footer">
     <span>RURBANIVE · Milos ecosystem and biodiversity restoration</span>
-    <a href="https://doi.org/10.5281/zenodo.23456678" target="_blank" rel="noopener noreferrer">Photographic dataset on Zenodo</a>
+    <a href="https://doi.org/10.5281/zenodo.23456678"
+       target="_blank" rel="noopener noreferrer">
+       Photographic dataset on Zenodo
+    </a>
   </footer>
 
-  <script>
-"use strict";
-const CSV_URL = "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site_rurbanive_with_images.csv";
-const $ = (id) => document.getElementById(id);
-const grid = $("plantGrid"), plantDialog = $("plantDialog"), lightbox = $("photoLightbox");
-let allPlants=[], lastRendered=[], edibleOnly=false, beeOnly=false, activeImages=[], imageIndex=0, previousFocus=null;
-const clean = (v) => String(v ?? "").trim();
-const yes = (v) => /^yes$/i.test(clean(v));
-const escapeHTML = (value) => clean(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const urls = (val) => clean(val).split("|").map(s=>s.trim()).filter(x=>/^https:\/\//i.test(x));
-const textField=(p,key)=>clean(p[key]);
-const nothing = v => !clean(v);
-function parseCSV(str){
- const lines=[];let row=[],field="",q=false;
- for(let i=0;i<str.length;i++){
-   const c=str[i],next=str[i+1];
-   if(c==='"'){if(q&&next==='"'){field+='"';i++;}else q=!q}
-   else if(c===","&&!q){row.push(field);field=""}
-   else if((c==="\r"||c==="\n")&&!q){if(c==="\r"&&next==="\n")i++;row.push(field);field="";if(row.some(s=>s.trim()))lines.push(row);row=[]}
-   else field+=c;
- }
- if(field.length||row.length){row.push(field);if(row.some(s=>s.trim()))lines.push(row)}
- const headers=(lines.shift()||[]).map(x=>x.replace(/^\uFEFF/,"").trim());
- return lines.map(row=>Object.fromEntries(headers.map((h,i)=>[h,clean(row[i])])));
-}
-function displayValue(key,val){
- let value=clean(val);
- if(key==="Red list Assessment")value=value.replace(/\bNE\b/gi,"Not Evaluated").replace(/\bLC\b/gi,"Least Concern");
- if(key==="scientific_name" && /Erica malipuliflora/i.test(value))value="Erica manipuliflora";
- return value;
-}
-function renderValue(key,val){return escapeHTML(displayValue(key,val))}
-function formatTrait(label,value,wide=false){
- if(nothing(value))return "";
- const content=renderValue(label,value);
- return '<div class="trait'+(wide?' span-two':'')+'"><span class="trait-label">'+escapeHTML(label)+'</span><div class="trait-value">'+content+'</div></div>';
-}
-function makeTraits(p){
- const out=[];
- // These are shown as descriptive mechanisms, not redundant Yes badges.
- const mechanismGroups=[
-  ["Fire resistance","Fire resistance mechanism"],
-  ["Allelopathy","Allelopathy mechanism"],
-  ["Herbivory resistance","Anti-herbivory traits"]
- ];
- const skip=new Set(["id","card_image","scientific_name","gallery_images","gallery_captions","AMF_image","Rhizobia_image","AMF_image_caption","Rhizobia_image_caption","Family","Greek Name","Common Name","Symbionts","AMF","Rhizobia","Ericoid mycorrhizal fungi","Pollinators"]);
- for(const [trait,mechanism] of mechanismGroups){
-   skip.add(mechanism);
-   const a=textField(p,trait),m=textField(p,mechanism);
-   if(!nothing(a)||!nothing(m)){
-     let value=(!nothing(a)&&!(yes(a)&&m))?a:"";
-     if(m)value+=(value?" — ":"")+m;
-     if(value)out.push(formatTrait(trait,value,true));
-   }
-   skip.add(trait);
- }
- const order=[
-  "Plant type","Primary Habitat","Flowering period","Red list Assessment","Population Trend","Reclamation plants",
-  "Bee plant","Wind pollinarion","Pollen / Nectar / Honeydew Production","Edible","Edible parts",
-  "Salinity Tolerance","Xerohalophyte","Chasmophyte","Obligate halophyte","Facultative halophyte",
-  "Phanerophyte","Cryptophyte","Hemicryptophyte","Chamaephyte","Photosynthetic pathway",
-  "Nitrogen fixer","Endemism"
- ];
- const labels={"Wind pollinarion":"Wind pollination","Reclamation plants":"Reclamation plants","Chasmophyte":"Chasmophyte"};
- for(const key of order){
-   const value=textField(p,key);
-   if(skip.has(key)||nothing(value))continue;
-   out.push(formatTrait(labels[key]||key,value,["Primary Habitat","Pollen / Nectar / Honeydew Production"].includes(key)));
-   skip.add(key);
- }
- for(const key of Object.keys(p)){if(!skip.has(key)&&!nothing(p[key]))out.push(formatTrait(key,p[key],true))}
- return out.length ? '<h3 class="traits-title">Ecological profile</h3><div class="traits-grid">'+out.join("")+'</div>' : "";
-}
-function sectionImageButton(imgs,index,klass,alt){
- return '<button type="button" class="'+klass+'" data-photo-set="'+escapeHTML(JSON.stringify(imgs))+'" data-photo-index="'+index+'" aria-label="'+escapeHTML(alt)+'"><img loading="lazy" src="'+escapeHTML(imgs[index])+'" alt="'+escapeHTML(alt)+'"></button>';
-}
-function makeSymbiont(p,key,title){
- const imgs=urls(p[key+"_image"]);if(!imgs.length)return "";
- const caption=textField(p,key+"_image_caption") || (key==="AMF"
-  ? "Arbuscules in roots stained with trypan blue, indicating arbuscular mycorrhizal colonization."
-  : "Nodules of "+displayValue("scientific_name",p.scientific_name)+", indicating rhizobial symbiosis and nitrogen fixation.");
- const label=title;
- const buttons=sectionImageButton(imgs,0,"symbiont-photo","Enlarge "+label+" image")+
- (imgs.length>1?'<div class="symbiont-thumbs">'+imgs.slice(1).map((u,i)=>sectionImageButton(imgs,i+1,"symbiont-photo","Enlarge "+label+" image "+(i+2))).join("")+'</div>':"");
- return '<section class="symbiont-box"><h4>'+escapeHTML(label)+'</h4>'+buttons+'<p class="symbiont-caption">'+escapeHTML(caption)+'</p></section>';
-}
-function makePlantDialog(p){
- const sci=displayValue("scientific_name",p.scientific_name),family=textField(p,"Family"),greek=textField(p,"Greek Name"),common=textField(p,"Common Name");
- const primary=urls(p.card_image),gallery=urls(p.gallery_images);
- const photoSet=[...primary,...gallery];
- const hero=primary.length?sectionImageButton(photoSet,0,"main-photo","Enlarge photograph of "+sci):"";
- const thumbnails=gallery.length?'<section class="photo-collection"><h3>Plant gallery</h3><div class="gallery-row">'+gallery.map((_,i)=>sectionImageButton(photoSet,i+primary.length,"gallery-thumb","Enlarge gallery photograph "+(i+1)+" of "+sci)).join("")+'</div></section>':"";
- const micro=[makeSymbiont(p,"AMF","AMF"),makeSymbiont(p,"Rhizobia","Nitrogen-Fixing Nodules")].filter(Boolean);
- const microHTML=micro.length?'<h3 class="symbionts-title">Symbiotic associations</h3><div class="symbiont-grid">'+micro.join("")+'</div>':"";
- const symbiontText=[["Symbionts","Symbionts"],["AMF","AMF"],["Rhizobia","Rhizobia"],["Ericoid mycorrhizal fungi","Ericoid mycorrhizal fungi"]].map(([label,key])=>formatTrait(label,p[key])).filter(Boolean).join("");
- const pollinatorTrait=formatTrait("Pollinators",p.Pollinators,true);
- return '<div class="dialog-content"><div class="plant-heading"><h2>'+escapeHTML(sci)+'</h2><p>'+[common,greek,family].filter(Boolean).map(escapeHTML).join(" · ")+'</p></div>'+
- hero+thumbnails+makeTraits(p)+(symbiontText||pollinatorTrait?'<h3 class="traits-title">Biological interactions</h3><div class="traits-grid">'+symbiontText+pollinatorTrait+'</div>':"")+microHTML+'</div>';
-}
-function openPlant(p){
- previousFocus=document.activeElement;
- $("plantDialogContent").innerHTML=makePlantDialog(p);
- plantDialog.showModal();
- const url=new URL(location.href);url.searchParams.set("id",p.id);history.replaceState(null,"",url);
-}
-function closePlant(){plantDialog.close()}
-$("closePlantDialog").addEventListener("click",closePlant);
-plantDialog.addEventListener("close",()=>{
- previousFocus?.focus?.();
- const url=new URL(location.href);url.searchParams.delete("id");history.replaceState(null,"",url);
-});
-plantDialog.addEventListener("click",e=>{if(e.target===plantDialog)closePlant()});
-function showLightbox(){
- const src=activeImages[imageIndex];if(!src)return;
- $("lightboxImage").src=src;$("lightboxImage").alt="Enlarged botanical photograph";
- $("lightboxCaption").textContent=activeImages.length>1?(imageIndex+1)+" / "+activeImages.length:"";
- $("lightboxPrev").hidden=activeImages.length<2;$("lightboxNext").hidden=activeImages.length<2;
-}
-function openLightbox(images,index){
- activeImages=images;imageIndex=Math.max(0,Math.min(images.length-1,index));showLightbox();
- lightbox.showModal();
-}
-function shiftLightbox(dir){imageIndex=(imageIndex+dir+activeImages.length)%activeImages.length;showLightbox()}
-$("closePhotoLightbox").addEventListener("click",()=>lightbox.close());
-$("lightboxPrev").addEventListener("click",()=>shiftLightbox(-1));
-$("lightboxNext").addEventListener("click",()=>shiftLightbox(1));
-lightbox.addEventListener("click",e=>{if(e.target===lightbox)lightbox.close()});
-window.addEventListener("keydown",e=>{
- if(!lightbox.open)return;
- if(e.key==="ArrowRight")shiftLightbox(1);
- if(e.key==="ArrowLeft")shiftLightbox(-1);
-});
-$("plantDialogContent").addEventListener("click",e=>{
- const target=e.target.closest("button[data-photo-set]");if(!target)return;
- try{const imgs=JSON.parse(target.dataset.photoSet);openLightbox(imgs,Number(target.dataset.photoIndex))}catch(e){console.error(e)}
-});
-let touchStart=0;
-lightbox.addEventListener("touchstart",e=>{touchStart=e.changedTouches[0]?.screenX||0},{passive:true});
-lightbox.addEventListener("touchend",e=>{const diff=(e.changedTouches[0]?.screenX||0)-touchStart;if(Math.abs(diff)>55 && activeImages.length>1)shiftLightbox(diff>0?-1:1)},{passive:true});
-function render(plants){
- lastRendered=plants.filter(p=>p.card_image&&p.scientific_name);
- grid.innerHTML=lastRendered.map(p=>'<article class="card-animation-layer"><div class="card" data-id="'+escapeHTML(p.id)+'"><button class="card-button" type="button" data-plant-id="'+escapeHTML(p.id)+'" aria-label="View '+escapeHTML(displayValue("scientific_name",p.scientific_name))+'"><div class="image-wrap loading"><img loading="lazy" decoding="async" src="'+escapeHTML(p.card_image)+'" alt="'+escapeHTML(displayValue("scientific_name",p.scientific_name))+'"></div><span class="card-title">'+escapeHTML(displayValue("scientific_name",p.scientific_name))+'</span><span class="card-family">'+escapeHTML(p.Family)+'</span></button></div></article>').join("")||'<p class="error">No plants match your filters.</p>';
- grid.querySelectorAll(".image-wrap img").forEach(img=>{
-  const done=()=>img.parentNode?.classList.remove("loading");if(img.complete)done();
-  img.addEventListener("load",done,{once:true});img.addEventListener("error",done,{once:true});
- });
- $("statusLine").textContent=lastRendered.length+" plants shown";
-}
-grid.addEventListener("click",e=>{
- const button=e.target.closest("[data-plant-id]");if(!button)return;
- const plant=allPlants.find(p=>p.id===button.dataset.plantId);if(plant)openPlant(plant);
-});
-function applyFilters(){
- const q=clean($("searchInput").value).toLocaleLowerCase();
- render(allPlants.filter(p=>{
- const txt=[p.scientific_name,p["Greek Name"],p.Family,p["Common Name"]].join(" ").toLocaleLowerCase();
- return (!q||txt.includes(q))&&(!edibleOnly||yes(p.Edible))&&(!beeOnly||yes(p["Bee plant"]));
- }));
-}
-$("searchInput").addEventListener("input",applyFilters);
-$("edibleBtn").addEventListener("click",()=>{edibleOnly=!edibleOnly;$("edibleBtn").setAttribute("aria-pressed",String(edibleOnly));applyFilters()});
-$("beeBtn").addEventListener("click",()=>{beeOnly=!beeOnly;$("beeBtn").setAttribute("aria-pressed",String(beeOnly));applyFilters()});
-$("clearBtn").addEventListener("click",()=>{$("searchInput").value="";edibleOnly=false;beeOnly=false;$("edibleBtn").setAttribute("aria-pressed","false");$("beeBtn").setAttribute("aria-pressed","false");applyFilters();$("statusLine").textContent="Filters cleared"});
-$("randomBtn").addEventListener("click",()=>{
- if(!lastRendered.length)return;
- const plant=lastRendered[Math.floor(Math.random()*lastRendered.length)];
- const card=Array.from(grid.querySelectorAll(".card")).find(c=>c.dataset.id===plant.id);
- if(!card)return;
- grid.querySelectorAll(".picked").forEach(c=>c.classList.remove("picked"));
- card.classList.add("picked");card.scrollIntoView({behavior:"smooth",block:"center"});
- $("statusLine").textContent="Random pick: "+displayValue("scientific_name",plant.scientific_name);
-});
-(async()=>{
- try{
-  grid.innerHTML='<p class="loading">Loading plants…</p>';
-  const response=await fetch(CSV_URL,{cache:"no-store"});if(!response.ok)throw new Error("CSV HTTP "+response.status);
-  allPlants=parseCSV(await response.text());applyFilters();
-  const id=new URL(location.href).searchParams.get("id");
-  const p=allPlants.find(x=>x.id===id);if(p)openPlant(p);
- }catch(e){console.error(e);grid.innerHTML='<p class="error">Could not load the plant database. Check the browser console.</p>'}
-})();
-// Original blob menu animation, adapted for keyboard and touch.
-(()=>{
- const menu=$("menu"),blob=$("blob"),path=$("blob-path"),hamburger=document.querySelector(".hamburger"),inner=document.querySelector(".menu-inner");
- if(!menu||!blob||!path||!hamburger||!inner)return;
- const VB_W=60,VB_H=1000,anchor=120,curviness=65,hoverZone=150,expand=8,maxPull=22;
- let peek=22,mouseX=0,mouseY=innerHeight/2,y=mouseY,curveX=0,targetX=0,expanded=false;
- function getPeek(){const n=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--peek"));return Number.isFinite(n)?n:22}
- function setMenu(on){menu.classList.toggle("expanded",on);expanded=on;hamburger.setAttribute("aria-expanded",String(on))}
- hamburger.addEventListener("mouseenter",()=>setMenu(true));inner.addEventListener("mouseenter",()=>setMenu(true));menu.addEventListener("mouseleave",()=>setMenu(false));
- hamburger.addEventListener("click",()=>setMenu(!expanded));
- menu.addEventListener("focusin",()=>setMenu(true));
- menu.addEventListener("focusout",e=>{if(!menu.contains(e.relatedTarget))setMenu(false)});
- window.addEventListener("pointermove",e=>{mouseX=e.clientX;mouseY=e.clientY},{passive:true});
- window.addEventListener("resize",()=>{peek=getPeek()});
- peek=getPeek();
- function tick(){
- const vh=Math.max(1,innerHeight);const minPx=anchor/VB_H*vh,maxPx=(VB_H-anchor)/VB_H*vh;
- y+=(Math.min(maxPx,Math.max(minPx,mouseY))-y)*.18;
- hamburger.style.top=(y-(hamburger.offsetHeight||26)/2)+"px";
- const yVB=y/vh*VB_H;
- targetX=expanded||mouseX>hoverZone?0:Math.max(-maxPull,Math.min(0,-((VB_W+expand)/100)*(mouseX-hoverZone)));
- curveX+=(targetX-curveX)*.12;
- const d="M"+VB_W+","+VB_H+"H0V0h"+VB_W+"v"+(yVB-anchor)+"c0,"+curviness+","+curveX+","+curviness+","+curveX+","+anchor+"S"+VB_W+","+yVB+","+VB_W+","+(yVB+anchor*2)+"V"+VB_H+"z";
- path.setAttribute("d",d);blob.style.width=(peek+Math.abs(curveX))+"px";
- requestAnimationFrame(tick);
- }
- requestAnimationFrame(tick);
-})();
+</main>
 
-  </script>
+<!-- SPECIES POPUP -->
+
+<dialog id="plantDialog" aria-label="Plant species details">
+  <button id="closePlantDialog" class="dialog-close"
+          type="button" aria-label="Close plant details">×</button>
+  <div id="plantDialogContent"></div>
+</dialog>
+
+<!-- PHOTOGRAPH LIGHTBOX -->
+
+<dialog id="photoLightbox" aria-label="Enlarged photograph">
+
+  <button id="closePhotoLightbox"
+          class="lightbox-close"
+          type="button"
+          aria-label="Close photograph">×</button>
+
+  <button id="lightboxPrev"
+          class="lightbox-arrow lightbox-prev"
+          type="button"
+          aria-label="Previous photograph">‹</button>
+
+  <figure class="lightbox-figure">
+    <img id="lightboxImage" alt="">
+    <figcaption id="lightboxCaption"></figcaption>
+  </figure>
+
+  <button id="lightboxNext"
+          class="lightbox-arrow lightbox-next"
+          type="button"
+          aria-label="Next photograph">›</button>
+
+</dialog>
+
+<script>
+"use strict";
+
+/* ===========================================
+   DATABASE AND UTILITIES
+   =========================================== */
+
+const CSV_URL =
+  "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site_rurbanive_with_images.csv";
+
+const $ = id => document.getElementById(id);
+
+const clean = value => String(value ?? "").trim();
+
+const escapeHTML = value =>
+  String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+
+const field = (plant, key) => clean(plant[key]);
+
+const isYes = value => /^yes$/i.test(clean(value));
+const isPossible = value => /^possible$/i.test(clean(value));
+
+const isPositiveOrPossible = value =>
+  isYes(value) || isPossible(value);
+
+const imageURLs = value =>
+  clean(value)
+    .split("|")
+    .map(x => x.trim())
+    .filter(x => /^https:\/\//i.test(x));
+
+function speciesName(plant) {
+  return field(plant, "scientific_name")
+    .replace(/Erica malipuliflora/gi, "Erica manipuliflora");
+}
+
+/* ===========================================
+   CONSERVATION STATUS
+   =========================================== */
+
+function isThreatened(value) {
+  return /\b(VU|EN|CR)\b|\bvulnerable\b|\bendangered\b|\bcritically endangered\b/i
+    .test(clean(value));
+}
+
+function isDeclining(value) {
+  return /decreas|declining|in decline/i.test(clean(value));
+}
+
+function isConservationConcern(plant) {
+  return isDeclining(plant["Population Trend"]) ||
+         isThreatened(plant["Red list Assessment"]);
+}
+
+/* ===========================================
+   CSV PARSER
+   =========================================== */
+
+function parseCSV(input) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let quoted = false;
+
+  for (let i = 0; i < input.length; i++) {
+    const c = input[i];
+    const next = input[i + 1];
+
+    if (c === '"') {
+      if (quoted && next === '"') {
+        value += '"';
+        i++;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (c === "," && !quoted) {
+      row.push(value);
+      value = "";
+    } else if ((c === "\n" || c === "\r") && !quoted) {
+      if (c === "\r" && next === "\n") i++;
+
+      row.push(value);
+      value = "";
+
+      if (row.some(x => x.trim())) rows.push(row);
+      row = [];
+    } else {
+      value += c;
+    }
+  }
+
+  if (value.length || row.length) {
+    row.push(value);
+    if (row.some(x => x.trim())) rows.push(row);
+  }
+
+  const headers = (rows.shift() || [])
+    .map(h => h.replace(/^\uFEFF/, "").trim());
+
+  return rows.map(row =>
+    Object.fromEntries(
+      headers.map((h, i) => [h, clean(row[i])])
+    )
+  );
+}
+
+/* ===========================================
+   FILTERS
+   =========================================== */
+
+const filterRules = {
+  edible: p => isYes(p.Edible),
+
+  bee: p => isYes(p["Bee plant"]),
+
+  salinity: p => isYes(p["Salinity Tolerance"]),
+
+  fire: p => isPositiveOrPossible(p["Fire resistance"]),
+
+  herbivory: p => isPositiveOrPossible(p["Herbivory resistance"]),
+
+  allelopathy: p => isYes(p.Allelopathy),
+
+  rhizobia: p =>
+    isYes(p.Rhizobia) ||
+    /rhizobi/i.test(field(p, "Symbionts")),
+
+  conservation: isConservationConcern
+};
+
+const activeFilters = new Set();
+
+let allPlants = [];
+let visiblePlants = [];
+let focusBeforeDialog = null;
+
+/* ===========================================
+   FORMATTING
+   =========================================== */
+
+function niceValue(key, value) {
+  let text = clean(value);
+
+  if (key === "Red list Assessment") {
+    text = text
+      .replace(/not evaluated\s*\(NE\)/i, "Not Evaluated (NE)")
+      .replace(/least concern\s*\(LC\)/i, "Least Concern (LC)");
+  }
+
+  return text;
+}
+
+function valueColor(key, value) {
+  if (key === "Population Trend") {
+    if (isDeclining(value)) return "danger";
+
+    if (/stable|increas/i.test(value)) return "good";
+
+    return "muted";
+  }
+
+  if (key === "Red list Assessment") {
+    if (isThreatened(value)) return "danger";
+
+    if (/not evaluated/i.test(value)) return "muted";
+  }
+
+  if (key === "Fire resistance" ||
+      key === "Anti-herbivory traits") {
+
+    if (isYes(value)) return "good";
+    if (isPossible(value)) return "warning";
+  }
+
+  return "";
+}
+
+function trait(label, value, options = {}) {
+  if (!clean(value)) return "";
+
+  const color = valueColor(
+    options.statusKey || label,
+    value
+  );
+
+  return `
+    <div class="trait ${options.wide ? "wide" : ""}">
+      <span class="trait-label">
+        ${escapeHTML(label)}
+      </span>
+
+      <div class="trait-value ${color}">
+        ${escapeHTML(niceValue(
+          options.statusKey || label, value
+        ))}
+      </div>
+
+      ${options.mechanism ? `
+        <div class="trait-mechanism">
+          ${escapeHTML(options.mechanism)}
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
+
+/* ===========================================
+   TRAITS
+   =========================================== */
+
+function buildTraits(p) {
+  const used = new Set([
+    "id",
+    "scientific_name",
+    "card_image",
+    "gallery_images",
+    "gallery_captions",
+    "Family",
+    "Greek Name",
+    "Common Name",
+    "Symbionts",
+    "AMF",
+    "Rhizobia",
+    "Ericoid mycorrhizal fungi",
+    "AMF_image",
+    "AMF_image_caption",
+    "Rhizobia_image",
+    "Rhizobia_image_caption",
+    "Pollinators"
+  ]);
+
+  const items = [];
+
+  /* Agreed order at the beginning */
+
+  const firstFields = [
+    "Plant type",
+    "Primary Habitat",
+    "Red list Assessment",
+    "Population Trend",
+    "Photosynthetic pathway",
+    "Flowering period",
+    "Edible",
+    "Salinity Tolerance"
+  ];
+
+  for (const key of firstFields) {
+    used.add(key);
+
+    const value = field(p, key);
+
+    if (value) {
+      items.push(trait(key, value, {
+        wide: key === "Primary Habitat"
+      }));
+    }
+  }
+
+  /* Fire, grazing and allelopathy:
+     status and mechanism in the same box */
+
+  const groupedFields = [
+    [
+      "Fire resistance",
+      "Fire resistance",
+      "Fire resistance mechanism"
+    ],
+    [
+      "Herbivory resistance",
+      "Anti-herbivory traits",
+      "Anti-herbivory traits"
+    ],
+    [
+      "Allelopathy",
+      "Allelopathy",
+      "Allelopathy mechanism"
+    ]
+  ];
+
+  for (const [key, label, mechanismKey] of groupedFields) {
+    used.add(key);
+    used.add(mechanismKey);
+
+    const value = field(p, key);
+    const mechanism = field(p, mechanismKey);
+
+    if (value || mechanism) {
+      items.push(trait(label, value || "Not assessed", {
+        wide: true,
+        statusKey: label,
+        mechanism
+      }));
+    }
+  }
+
+  /* Remaining characteristics */
+
+  const remaining = [
+    "Bee plant",
+    "Wind pollinarion",
+    "Pollen / Nectar / Honeydew Production",
+    "Reclamation plants",
+    "Edible parts",
+    "Xerohalophyte",
+    "Chasmophyte",
+    "Obligate halophyte",
+    "Facultative halophyte",
+    "Phanerophyte",
+    "Cryptophyte",
+    "Hemicryptophyte",
+    "Chamaephyte",
+    "Nitrogen fixer",
+    "Endemism"
+  ];
+
+  const labels = {
+    "Wind pollinarion": "Wind pollination"
+  };
+
+  for (const key of remaining) {
+    used.add(key);
+
+    const value = field(p, key);
+    if (!value) continue;
+
+    items.push(trait(labels[key] || key, value, {
+      wide: key === "Pollen / Nectar / Honeydew Production"
+    }));
+  }
+
+  /* Other populated CSV fields */
+
+  for (const key of Object.keys(p)) {
+    if (used.has(key) || !field(p, key)) continue;
+
+    items.push(trait(key, field(p, key), {
+      wide: true
+    }));
+  }
+
+  return `
+    <h3 class="section-heading">Traits</h3>
+    <div class="traits-grid">
+      ${items.join("")}
+    </div>
+  `;
+}
+
+/* ===========================================
+   PHOTO BUTTONS AND SCIENTIFIC CAPTIONS
+   =========================================== */
+
+function italicizeSpecies(text, scientificName) {
+  const safeText = escapeHTML(text);
+  const safeName = escapeHTML(scientificName);
+
+  if (!safeName) return safeText;
+
+  return safeText.split(safeName)
+    .join(`<i>${safeName}</i>`);
+}
+
+function photoButton(
+  urls, index, className, alt,
+  caption = "", scientificName = ""
+) {
+  return `
+    <button type="button"
+            class="photo-button ${className}"
+            data-images="${escapeHTML(JSON.stringify(urls))}"
+            data-index="${index}"
+            data-caption="${escapeHTML(caption)}"
+            data-scientific="${escapeHTML(scientificName)}"
+            aria-label="${escapeHTML(alt)}">
+
+      <img loading="lazy"
+           src="${escapeHTML(urls[index])}"
+           alt="${escapeHTML(alt)}">
+    </button>
+  `;
+}
+
+/* ===========================================
+   SYMBIONT PHOTOGRAPHS
+   =========================================== */
+
+function symbiontBox(plant, key, title) {
+  const images = imageURLs(plant[`${key}_image`]);
+
+  if (!images.length) return "";
+
+  const scientific = speciesName(plant);
+
+  const caption =
+    field(plant, `${key}_image_caption`) ||
+    (
+      key === "AMF"
+      ? "Arbuscules in roots stained with trypan blue, indicating arbuscular mycorrhizal colonization."
+      : `Nodules of ${scientific}, indicating rhizobial symbiosis and nitrogen fixation.`
+    );
+
+  const main = photoButton(
+    images, 0,
+    "symbiont-photo",
+    `Enlarge ${title} photograph`,
+    caption, scientific
+  );
+
+  const otherImages = images.length > 1
+    ? `
+      <div class="symbiont-thumbs">
+        ${images.slice(1).map((_, i) =>
+          photoButton(
+            images, i + 1,
+            "symbiont-photo",
+            `Enlarge ${title} photograph ${i + 2}`,
+            caption, scientific
+          )
+        ).join("")}
+      </div>
+    `
+    : "";
+
+  return `
+    <section class="symbiont-box">
+      <h4>${escapeHTML(title)}</h4>
+      ${main}
+      ${otherImages}
+      <p class="symbiont-caption">
+        ${italicizeSpecies(caption, scientific)}
+      </p>
+    </section>
+  `;
+}
+
+/* ===========================================
+   ASSOCIATIONS
+   =========================================== */
+
+function buildAssociations(plant) {
+  const items = [];
+
+  const symbionts = field(plant, "Symbionts");
+  const pollinators = field(plant, "Pollinators");
+
+  if (symbionts) {
+    items.push(trait("Symbionts", symbionts, {
+      wide: true
+    }));
+  } else {
+    const alternatives = [];
+
+    if (field(plant, "Ericoid mycorrhizal fungi")) {
+      alternatives.push("Ericoid mycorrhizal fungi");
+    }
+
+    if (isYes(plant.AMF)) {
+      alternatives.push("Arbuscular mycorrhizal fungi");
+    }
+
+    if (isYes(plant.Rhizobia)) {
+      alternatives.push("Rhizobia");
+    }
+
+    if (alternatives.length) {
+      items.push(trait(
+        "Symbionts",
+        alternatives.join(", "),
+        {wide: true}
+      ));
+    }
+  }
+
+  if (pollinators) {
+    items.push(trait("Pollinators", pollinators, {
+      wide: true
+    }));
+  }
+
+  /* AMF: Yes and Rhizobia: Yes are deliberately
+     not displayed as separate boxes. */
+
+  const images = [
+    symbiontBox(plant, "AMF", "AMF"),
+    symbiontBox(
+      plant, "Rhizobia",
+      "Nitrogen-Fixing Nodules"
+    )
+  ].filter(Boolean);
+
+  if (!items.length && !images.length) return "";
+
+  return `
+    <h3 class="section-heading">Associations</h3>
+
+    ${items.length ? `
+      <div class="association-grid">
+        ${items.join("")}
+      </div>
+    ` : ""}
+
+    ${images.length ? `
+      <div class="symbiont-grid">
+        ${images.join("")}
+      </div>
+    ` : ""}
+  `;
+}
+
+/* ===========================================
+   FULL PLANT POPUP
+   =========================================== */
+
+function buildPlantHTML(plant) {
+  const scientific = speciesName(plant);
+
+  const mainImages = imageURLs(plant.card_image);
+  const gallery = imageURLs(plant.gallery_images);
+
+  const photoSet = [
+    ...mainImages,
+    ...gallery
+  ];
+
+  const hero = mainImages.length
+    ? photoButton(
+        photoSet, 0, "main-photo",
+        `Enlarge ${scientific} photograph`
+      )
+    : "";
+
+  const galleryHTML = gallery.length
+    ? `
+      <h3 class="section-heading">Gallery</h3>
+
+      <div class="gallery-row">
+        ${gallery.map((_, i) =>
+          photoButton(
+            photoSet,
+            mainImages.length + i,
+            "gallery-thumb",
+            `View ${scientific} photograph ${i + 1}`
+          )
+        ).join("")}
+      </div>
+    `
+    : "";
+
+  const subtitle = [
+    field(plant, "Common Name"),
+    field(plant, "Greek Name"),
+    field(plant, "Family")
+  ].filter(Boolean).map(escapeHTML).join(" · ");
+
+  return `
+    <div class="dialog-content">
+
+      <header class="plant-heading">
+        <h2><i>${escapeHTML(scientific)}</i></h2>
+        <p>${subtitle}</p>
+      </header>
+
+      ${hero}
+
+      ${galleryHTML}
+
+      ${buildTraits(plant)}
+
+      ${buildAssociations(plant)}
+
+    </div>
+  `;
+}
+
+/* ===========================================
+   POPUP BEHAVIOR
+   =========================================== */
+
+const plantDialog = $("plantDialog");
+const photoLightbox = $("photoLightbox");
+
+function openPlant(plant) {
+  focusBeforeDialog = document.activeElement;
+
+  $("plantDialogContent").innerHTML =
+    buildPlantHTML(plant);
+
+  plantDialog.showModal();
+
+  const url = new URL(location.href);
+  url.searchParams.set("id", plant.id);
+
+  history.replaceState(null, "", url);
+}
+
+function closePlant() {
+  if (plantDialog.open) plantDialog.close();
+}
+
+$("closePlantDialog").addEventListener(
+  "click", closePlant
+);
+
+plantDialog.addEventListener("click", event => {
+  if (event.target === plantDialog) closePlant();
+});
+
+plantDialog.addEventListener("close", () => {
+  focusBeforeDialog?.focus?.();
+
+  const url = new URL(location.href);
+  url.searchParams.delete("id");
+
+  history.replaceState(null, "", url);
+});
+
+/* ===========================================
+   PHOTO LIGHTBOX
+   =========================================== */
+
+let lightboxImages = [];
+let lightboxIndex = 0;
+let lightboxText = "";
+let lightboxScientific = "";
+
+function updateLightbox() {
+  const source = lightboxImages[lightboxIndex];
+  if (!source) return;
+
+  $("lightboxImage").src = source;
+  $("lightboxImage").alt = "Enlarged botanical photograph";
+
+  const counter = lightboxImages.length > 1
+    ? `${lightboxIndex + 1} / ${lightboxImages.length}`
+    : "";
+
+  $("lightboxCaption").innerHTML = lightboxText
+    ? italicizeSpecies(lightboxText, lightboxScientific) +
+      (counter ? ` · ${counter}` : "")
+    : counter;
+
+  $("lightboxPrev").hidden =
+    lightboxImages.length < 2;
+
+  $("lightboxNext").hidden =
+    lightboxImages.length < 2;
+}
+
+function shiftLightbox(direction) {
+  lightboxIndex =
+    (lightboxIndex + direction + lightboxImages.length) %
+    lightboxImages.length;
+
+  updateLightbox();
+}
+
+$("plantDialogContent").addEventListener(
+  "click",
+  event => {
+    const button =
+      event.target.closest("button[data-images]");
+
+    if (!button) return;
+
+    try {
+      lightboxImages =
+        JSON.parse(button.dataset.images);
+
+      lightboxIndex =
+        Number(button.dataset.index) || 0;
+
+      lightboxText =
+        button.dataset.caption || "";
+
+      lightboxScientific =
+        button.dataset.scientific || "";
+
+      updateLightbox();
+      photoLightbox.showModal();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+$("lightboxPrev").addEventListener(
+  "click", () => shiftLightbox(-1)
+);
+
+$("lightboxNext").addEventListener(
+  "click", () => shiftLightbox(1)
+);
+
+$("closePhotoLightbox").addEventListener(
+  "click", () => photoLightbox.close()
+);
+
+photoLightbox.addEventListener("click", event => {
+  if (event.target === photoLightbox) {
+    photoLightbox.close();
+  }
+});
+
+window.addEventListener("keydown", event => {
+  if (!photoLightbox.open) return;
+
+  if (event.key === "ArrowRight") {
+    shiftLightbox(1);
+  }
+
+  if (event.key === "ArrowLeft") {
+    shiftLightbox(-1);
+  }
+});
+
+/* Swipe between images on mobile */
+
+let touchStartX = 0;
+
+photoLightbox.addEventListener("touchstart", event => {
+  touchStartX =
+    event.changedTouches[0]?.screenX || 0;
+}, {passive: true});
+
+photoLightbox.addEventListener("touchend", event => {
+  const difference =
+    (event.changedTouches[0]?.screenX || 0) -
+    touchStartX;
+
+  if (Math.abs(difference) > 55 &&
+      lightboxImages.length > 1) {
+    shiftLightbox(difference > 0 ? -1 : 1);
+  }
+}, {passive: true});
+
+/* ===========================================
+   COLOR LABELS ON FILTERED PLANT CARDS
+   =========================================== */
+
+function cardBadges(plant) {
+  const badges = [];
+
+  const checks = [
+    ["fire", "Fire resistance", "Fire"],
+    ["herbivory", "Herbivory resistance", "Grazing"]
+  ];
+
+  for (const [filter, column, label] of checks) {
+    if (!activeFilters.has(filter)) continue;
+
+    const value = field(plant, column);
+
+    if (!isPositiveOrPossible(value)) continue;
+
+    badges.push(`
+      <span class="status-pill ${
+        isYes(value) ? "yes" : "possible"
+      }">
+        ${label}: ${escapeHTML(value)}
+      </span>
+    `);
+  }
+
+  if (
+    activeFilters.has("conservation") &&
+    isConservationConcern(plant)
+  ) {
+    badges.push(`
+      <span class="status-pill danger">
+        ${
+          isDeclining(plant["Population Trend"])
+            ? "Declining population"
+            : "Threatened"
+        }
+      </span>
+    `);
+  }
+
+  return badges.length
+    ? `<div class="card-statuses">${badges.join("")}</div>`
+    : "";
+}
+
+/* ===========================================
+   PLANT GRID
+   =========================================== */
+
+function render(plants) {
+  visiblePlants = plants.filter(
+    p => p.card_image && p.scientific_name
+  );
+
+  const html = visiblePlants.map(plant => {
+    const scientific = speciesName(plant);
+
+    return `
+      <article class="card-animation-layer">
+        <div class="card" data-id="${escapeHTML(plant.id)}">
+
+          <button class="card-button"
+                  type="button"
+                  data-plant="${escapeHTML(plant.id)}"
+                  aria-label="View ${escapeHTML(scientific)}">
+
+            <div class="image-wrap loading">
+              <img loading="lazy"
+                   decoding="async"
+                   src="${escapeHTML(plant.card_image)}"
+                   alt="${escapeHTML(scientific)}">
+            </div>
+
+            <span class="card-name">
+              <i>${escapeHTML(scientific)}</i>
+            </span>
+
+            <span class="card-family">
+              ${escapeHTML(plant.Family)}
+            </span>
+
+            ${cardBadges(plant)}
+
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  $("plantGrid").innerHTML =
+    html ||
+    '<p class="error">No plants match your search and filters.</p>';
+
+  $("plantGrid")
+    .querySelectorAll(".image-wrap img")
+    .forEach(img => {
+      const finish = () =>
+        img.parentElement.classList.remove("loading");
+
+      if (img.complete) finish();
+
+      img.addEventListener("load", finish, {
+        once: true
+      });
+
+      img.addEventListener("error", finish, {
+        once: true
+      });
+    });
+
+  $("statusLine").textContent =
+    `${visiblePlants.length} of ${allPlants.length} plants shown`;
+}
+
+/* ===========================================
+   SEARCH AND MULTIPLE FILTERS
+   =========================================== */
+
+function applyFilters() {
+  const query = clean(
+    $("searchInput").value
+  ).toLocaleLowerCase();
+
+  const filtered = allPlants.filter(plant => {
+    const searchText = [
+      speciesName(plant),
+      plant["Greek Name"],
+      plant["Common Name"],
+      plant.Family
+    ].join(" ").toLocaleLowerCase();
+
+    const matchesSearch =
+      !query || searchText.includes(query);
+
+    const matchesFilters =
+      [...activeFilters].every(key =>
+        filterRules[key](plant)
+      );
+
+    return matchesSearch && matchesFilters;
+  });
+
+  render(filtered);
+}
+
+$("searchInput").addEventListener(
+  "input", applyFilters
+);
+
+$("filterButtons").addEventListener(
+  "click", event => {
+    const button =
+      event.target.closest("button[data-filter]");
+
+    if (!button) return;
+
+    const key = button.dataset.filter;
+
+    if (!filterRules[key]) return;
+
+    if (activeFilters.has(key)) {
+      activeFilters.delete(key);
+    } else {
+      activeFilters.add(key);
+    }
+
+    button.setAttribute(
+      "aria-pressed",
+      String(activeFilters.has(key))
+    );
+
+    applyFilters();
+  }
+);
+
+$("clearBtn").addEventListener("click", () => {
+  $("searchInput").value = "";
+
+  activeFilters.clear();
+
+  document.querySelectorAll("[data-filter]")
+    .forEach(button =>
+      button.setAttribute("aria-pressed", "false")
+    );
+
+  applyFilters();
+});
+
+/* ===========================================
+   RANDOM PLANT
+   =========================================== */
+
+$("randomBtn").addEventListener("click", () => {
+  if (!visiblePlants.length) return;
+
+  const plant = visiblePlants[
+    Math.floor(Math.random() * visiblePlants.length)
+  ];
+
+  const card = Array.from(
+    document.querySelectorAll(".card")
+  ).find(element =>
+    element.dataset.id === plant.id
+  );
+
+  if (!card) return;
+
+  document.querySelectorAll(".card.picked")
+    .forEach(element =>
+      element.classList.remove("picked")
+    );
+
+  card.classList.add("picked");
+
+  card.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+  $("statusLine").textContent =
+    `Random pick: ${speciesName(plant)}`;
+});
+
+/* ===========================================
+   OPEN PLANT WHEN CARD IS CLICKED
+   =========================================== */
+
+$("plantGrid").addEventListener("click", event => {
+  const button =
+    event.target.closest("button[data-plant]");
+
+  if (!button) return;
+
+  const plant = allPlants.find(
+    p => p.id === button.dataset.plant
+  );
+
+  if (plant) openPlant(plant);
+});
+
+/* ===========================================
+   LOAD DATABASE
+   =========================================== */
+
+async function initializeDatabase() {
+  try {
+    $("plantGrid").innerHTML =
+      '<p class="loading">Loading plant database…</p>';
+
+    const response = await fetch(
+      CSV_URL,
+      {cache: "no-store"}
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `CSV request failed: ${response.status}`
+      );
+    }
+
+    allPlants = parseCSV(
+      await response.text()
+    );
+
+    if (!allPlants.length) {
+      throw new Error("No species found in the CSV.");
+    }
+
+    applyFilters();
+
+    /* Support direct links such as ?id=P03 */
+
+    const initialId =
+      new URL(location.href).searchParams.get("id");
+
+    const initialPlant = allPlants.find(
+      p => p.id === initialId
+    );
+
+    if (initialPlant) openPlant(initialPlant);
+
+  } catch (error) {
+    console.error(error);
+
+    $("plantGrid").innerHTML = `
+      <p class="error">
+        The plant database could not be loaded.
+        Please try again later.
+      </p>
+    `;
+  }
+}
+
+initializeDatabase();
+
+/* ===========================================
+   ORIGINAL ANIMATED BLOB MENU
+   =========================================== */
+
+(() => {
+  const menu = $("menu");
+  const blob = $("blob");
+  const blobPath = $("blob-path");
+  const hamburger = document.querySelector(".hamburger");
+  const menuInner = document.querySelector(".menu-inner");
+
+  if (!menu || !blob || !blobPath ||
+      !hamburger || !menuInner) return;
+
+  const VB_W = 60;
+  const VB_H = 1000;
+  const anchorDistance = 120;
+  const curviness = 65;
+  const hoverZone = 150;
+  const expandAmount = 8;
+  const maxPull = 22;
+
+  let peek = 22;
+  let mouseX = 0;
+  let mouseYpx = window.innerHeight / 2;
+  let yPx = mouseYpx;
+  let curveX = 0;
+  let targetX = 0;
+  let expanded = false;
+
+  const lerp = (a, b, t) =>
+    a + (b - a) * t;
+
+  function getPeek() {
+    const raw = getComputedStyle(
+      document.documentElement
+    ).getPropertyValue("--peek");
+
+    const n = parseFloat(raw);
+
+    return Number.isFinite(n) ? n : 22;
+  }
+
+  function setMenu(open) {
+    expanded = open;
+    menu.classList.toggle("expanded", open);
+
+    hamburger.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+  }
+
+  peek = getPeek();
+
+  hamburger.addEventListener(
+    "mouseenter",
+    () => setMenu(true)
+  );
+
+  menuInner.addEventListener(
+    "mouseenter",
+    () => setMenu(true)
+  );
+
+  menu.addEventListener(
+    "mouseleave",
+    () => setMenu(false)
+  );
+
+  hamburger.addEventListener(
+    "click",
+    () => setMenu(!expanded)
+  );
+
+  menu.addEventListener(
+    "focusin",
+    () => setMenu(true)
+  );
+
+  menu.addEventListener("focusout", event => {
+    if (!menu.contains(event.relatedTarget)) {
+      setMenu(false);
+    }
+  });
+
+  window.addEventListener("pointermove", event => {
+    mouseX = event.clientX;
+    mouseYpx = event.clientY;
+  }, {passive: true});
+
+  window.addEventListener("resize", () => {
+    peek = getPeek();
+  });
+
+  function tick() {
+    const vh = Math.max(1, window.innerHeight);
+
+    const minY =
+      anchorDistance / VB_H * vh;
+
+    const maxY =
+      (VB_H - anchorDistance) / VB_H * vh;
+
+    const clampedY =
+      Math.min(maxY, Math.max(minY, mouseYpx));
+
+    yPx = lerp(yPx, clampedY, .18);
+
+    hamburger.style.top =
+      (yPx - (hamburger.offsetHeight || 26) / 2) + "px";
+
+    const yVB = yPx / vh * VB_H;
+
+    if (expanded || mouseX > hoverZone) {
+      targetX = 0;
+    } else {
+      const raw =
+        -((VB_W + expandAmount) / 100) *
+        (mouseX - hoverZone);
+
+      targetX =
+        Math.max(-maxPull, Math.min(0, raw));
+    }
+
+    curveX = lerp(curveX, targetX, .12);
+
+    const d =
+      "M" + VB_W + "," + VB_H +
+      "H0V0h" + VB_W +
+      "v" + (yVB - anchorDistance) +
+      "c0," + curviness +
+      "," + curveX +
+      "," + curviness +
+      "," + curveX +
+      "," + anchorDistance +
+      "S" + VB_W +
+      "," + yVB +
+      "," + VB_W +
+      "," + (yVB + anchorDistance * 2) +
+      "V" + VB_H + "z";
+
+    blobPath.setAttribute("d", d);
+
+    blob.style.width =
+      (peek + Math.abs(curveX)) + "px";
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+</script>
+
 </body>
 </html>
