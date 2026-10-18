@@ -357,12 +357,33 @@
       padding: 16px;
       text-align: center;
     }
+  
+    /* New ecological species modal + gallery; the original site styles above stay intact. */
+    .card-button {display:block;width:100%;text-align:left;border:0;padding:0;background:transparent;color:inherit;cursor:pointer}
+    .card-button:focus-visible, .gallery-thumb:focus-visible, .symbiont-photo:focus-visible {outline:3px solid var(--y-accent);outline-offset:3px}
+    .card-title {display:block;font-style:italic;font-weight:700;margin-top:10px;font-size:14px;line-height:1.3}
+    .card-family {display:block;font-size:12px;color:#50665b;margin-top:4px}
+    .card-button .image-wrap img {height:auto;object-fit:contain}
+    .card-button .image-wrap {width:100%}
+    .database-footer{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:12px;color:#40594d}.database-footer a{color:var(--g-dark)}
+dialog{border:0;padding:0;color:var(--ink)}dialog::backdrop{background:#091b16b8;backdrop-filter:blur(5px)}body:has(dialog[open]){overflow:hidden}.plant-dialog{width:min(1060px,calc(100vw - 28px));max-height:min(92dvh,950px);border-radius:22px;box-shadow:0 25px 90px #0006;background:#f6faf7;overflow:auto}.dialog-close,.lightbox-close{position:sticky;float:right;top:12px;margin-right:12px;z-index:3;background:#fff;border:1px solid #d4ded7;border-radius:50%;width:40px;height:40px;font-size:27px;line-height:1}.dialog-content{padding:32px}.plant-heading h2{font-size:clamp(26px,3vw,37px);font-style:italic;color:var(--g-dark);margin:0 0 5px}.plant-heading p{margin:0;color:#66756d}.main-photo{display:block;width:100%;padding:0;border:0;border-radius:16px;overflow:hidden;background:#d5e3db;margin:20px 0 12px;max-height:390px}.main-photo img{width:100%;height:auto;max-height:390px;object-fit:contain;display:block}.photo-collection h3,.symbionts-title,.traits-title{color:var(--g-dark);font-size:19px;margin:24px 0 12px}.gallery-row{display:flex;gap:10px;overflow-x:auto;padding:3px 2px 10px}.gallery-thumb{width:124px;height:102px;flex:none;padding:0;border:2px solid transparent;border-radius:11px;overflow:hidden;background:#dae9de}.gallery-thumb:hover{border-color:var(--g-light)}.gallery-thumb img{height:100%;width:100%;object-fit:cover}.traits-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.trait{background:#fff;border:1px solid #d9e6dc;border-radius:12px;padding:12px 14px;overflow-wrap:anywhere;min-width:0}.trait-label{display:block;font-size:11px;letter-spacing:.045em;text-transform:uppercase;color:#577365;margin-bottom:5px;font-weight:700}.trait-value{font-size:14px;line-height:1.5;white-space:pre-wrap}.trait-value em{font-style:italic}.trait.span-two{grid-column:1/-1}.symbiont-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.symbiont-box{padding:14px;border-radius:14px;background:#fff;border:1px solid #d9e6dc}.symbiont-box h4{margin:0 0 9px;font-size:16px;color:var(--g-dark)}.symbiont-photo{padding:0;border:0;border-radius:10px;overflow:hidden;background:#e8f0e9;display:block;width:100%}.symbiont-photo img{width:100%;height:150px;object-fit:contain;display:block}.symbiont-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.symbiont-thumbs .symbiont-photo{width:72px}.symbiont-thumbs img{height:64px}.symbiont-caption{margin:10px 0 0;font-size:12px;line-height:1.5;color:#51625a}.photo-lightbox{width:min(1200px,calc(100vw - 16px));height:min(95dvh,960px);background:#101915;border-radius:16px;overflow:hidden;color:#fff}.photo-lightbox .lightbox-close{position:absolute;top:8px;right:8px;margin:0;background:#fff}.lightbox-figure{margin:0;padding:58px 56px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px}.lightbox-figure img{object-fit:contain;max-width:100%;max-height:calc(100% - 55px)}.lightbox-figure figcaption{text-align:center;font-size:14px;color:#eee}.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#ffffff26;color:#fff;border-radius:8px;font-size:40px;padding:3px 9px}.lightbox-prev{left:6px}.lightbox-next{right:6px}.lightbox-arrow[hidden]{display:none}
+
+    @media(max-width:640px){
+      .page{padding:16px 12px 50px;padding-left:calc(12px + var(--peek))}
+      .dialog-content{padding:22px 14px}
+      .traits-grid,.symbiont-grid{grid-template-columns:1fr}
+      .trait.span-two{grid-column:auto}
+      .lightbox-figure{padding:60px 36px 20px}
+      .gallery-thumb{width:104px;height:88px}
+    }
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
   </style>
 </head>
 
 <body>
   <div id="menu">
-    <button class="hamburger" type="button" aria-label="Toggle menu">
+    <button class="hamburger" type="button" aria-label="Toggle menu" aria-controls="menuLinks" aria-expanded="false">
       <span class="line"></span>
       <span class="line"></span>
       <span class="line"></span>
@@ -383,7 +404,7 @@
         </a>
       </div>
 
-      <ul>
+      <ul id="menuLinks">
         <li><a href="index.html">Home</a></li>
         <li><a href="plant-database.html" aria-current="page">Plant Database</a></li>
         <li><a href="restoration-protocols.html">Restoration Protocols</a></li>
@@ -445,386 +466,236 @@
     <section id="plantGrid" aria-label="Plant cards"></section>
   </main>
 
+
+  <!-- Species profile, opened from the existing cards -->
+  <dialog id="plantDialog" class="plant-dialog" aria-label="Plant species information">
+    <button id="closePlantDialog" class="dialog-close" type="button" aria-label="Close plant details">×</button>
+    <div id="plantDialogContent"></div>
+  </dialog>
+  <dialog id="photoLightbox" class="photo-lightbox" aria-label="Expanded plant or symbiont photograph">
+    <button class="lightbox-close" id="closePhotoLightbox" type="button" aria-label="Close enlarged photograph">×</button>
+    <button class="lightbox-arrow lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous photograph">‹</button>
+    <figure class="lightbox-figure">
+      <img id="lightboxImage" alt="">
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+    <button class="lightbox-arrow lightbox-next" id="lightboxNext" type="button" aria-label="Next photograph">›</button>
+  </dialog>
+  <footer class="database-footer" style="width:min(1200px,100%);margin:0 auto 24px;padding:0 24px">
+    <span>RURBANIVE · Milos ecosystem and biodiversity restoration</span>
+    <a href="https://doi.org/10.5281/zenodo.23456678" target="_blank" rel="noopener noreferrer">Photographic dataset on Zenodo</a>
+  </footer>
+
   <script>
-    (() => {
-      const menu = document.getElementById("menu");
-      const blob = document.getElementById("blob");
-      const blobPath = document.getElementById("blob-path");
-      const hamburger = document.querySelector(".hamburger");
-      const menuInner = document.querySelector(".menu-inner");
+"use strict";
+const CSV_URL = "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site_rurbanive_with_images.csv";
+const $ = (id) => document.getElementById(id);
+const grid = $("plantGrid"), plantDialog = $("plantDialog"), lightbox = $("photoLightbox");
+let allPlants=[], lastRendered=[], edibleOnly=false, beeOnly=false, activeImages=[], imageIndex=0, previousFocus=null;
+const clean = (v) => String(v ?? "").trim();
+const yes = (v) => /^yes$/i.test(clean(v));
+const escapeHTML = (value) => clean(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const urls = (val) => clean(val).split("|").map(s=>s.trim()).filter(x=>/^https:\/\//i.test(x));
+const textField=(p,key)=>clean(p[key]);
+const nothing = v => !clean(v);
+function parseCSV(str){
+ const lines=[];let row=[],field="",q=false;
+ for(let i=0;i<str.length;i++){
+   const c=str[i],next=str[i+1];
+   if(c==='"'){if(q&&next==='"'){field+='"';i++;}else q=!q}
+   else if(c===","&&!q){row.push(field);field=""}
+   else if((c==="\r"||c==="\n")&&!q){if(c==="\r"&&next==="\n")i++;row.push(field);field="";if(row.some(s=>s.trim()))lines.push(row);row=[]}
+   else field+=c;
+ }
+ if(field.length||row.length){row.push(field);if(row.some(s=>s.trim()))lines.push(row)}
+ const headers=(lines.shift()||[]).map(x=>x.replace(/^\uFEFF/,"").trim());
+ return lines.map(row=>Object.fromEntries(headers.map((h,i)=>[h,clean(row[i])])));
+}
+function displayValue(key,val){
+ let value=clean(val);
+ if(key==="Red list Assessment")value=value.replace(/\bNE\b/gi,"Not Evaluated").replace(/\bLC\b/gi,"Least Concern");
+ if(key==="scientific_name" && /Erica malipuliflora/i.test(value))value="Erica manipuliflora";
+ return value;
+}
+function renderValue(key,val){return escapeHTML(displayValue(key,val))}
+function formatTrait(label,value,wide=false){
+ if(nothing(value))return "";
+ const content=renderValue(label,value);
+ return '<div class="trait'+(wide?' span-two':'')+'"><span class="trait-label">'+escapeHTML(label)+'</span><div class="trait-value">'+content+'</div></div>';
+}
+function makeTraits(p){
+ const out=[];
+ // These are shown as descriptive mechanisms, not redundant Yes badges.
+ const mechanismGroups=[
+  ["Fire resistance","Fire resistance mechanism"],
+  ["Allelopathy","Allelopathy mechanism"],
+  ["Herbivory resistance","Anti-herbivory traits"]
+ ];
+ const skip=new Set(["id","card_image","scientific_name","gallery_images","gallery_captions","AMF_image","Rhizobia_image","AMF_image_caption","Rhizobia_image_caption","Family","Greek Name","Common Name","Symbionts","AMF","Rhizobia","Ericoid mycorrhizal fungi","Pollinators"]);
+ for(const [trait,mechanism] of mechanismGroups){
+   skip.add(mechanism);
+   const a=textField(p,trait),m=textField(p,mechanism);
+   if(!nothing(a)||!nothing(m)){
+     let value=(!nothing(a)&&!(yes(a)&&m))?a:"";
+     if(m)value+=(value?" — ":"")+m;
+     if(value)out.push(formatTrait(trait,value,true));
+   }
+   skip.add(trait);
+ }
+ const order=[
+  "Plant type","Primary Habitat","Flowering period","Red list Assessment","Population Trend","Reclamation plants",
+  "Bee plant","Wind pollinarion","Pollen / Nectar / Honeydew Production","Edible","Edible parts",
+  "Salinity Tolerance","Xerohalophyte","Chasmophyte","Obligate halophyte","Facultative halophyte",
+  "Phanerophyte","Cryptophyte","Hemicryptophyte","Chamaephyte","Photosynthetic pathway",
+  "Nitrogen fixer","Endemism"
+ ];
+ const labels={"Wind pollinarion":"Wind pollination","Reclamation plants":"Reclamation plants","Chasmophyte":"Chasmophyte"};
+ for(const key of order){
+   const value=textField(p,key);
+   if(skip.has(key)||nothing(value))continue;
+   out.push(formatTrait(labels[key]||key,value,["Primary Habitat","Pollen / Nectar / Honeydew Production"].includes(key)));
+   skip.add(key);
+ }
+ for(const key of Object.keys(p)){if(!skip.has(key)&&!nothing(p[key]))out.push(formatTrait(key,p[key],true))}
+ return out.length ? '<h3 class="traits-title">Ecological profile</h3><div class="traits-grid">'+out.join("")+'</div>' : "";
+}
+function sectionImageButton(imgs,index,klass,alt){
+ return '<button type="button" class="'+klass+'" data-photo-set="'+escapeHTML(JSON.stringify(imgs))+'" data-photo-index="'+index+'" aria-label="'+escapeHTML(alt)+'"><img loading="lazy" src="'+escapeHTML(imgs[index])+'" alt="'+escapeHTML(alt)+'"></button>';
+}
+function makeSymbiont(p,key,title){
+ const imgs=urls(p[key+"_image"]);if(!imgs.length)return "";
+ const caption=textField(p,key+"_image_caption") || (key==="AMF"
+  ? "Arbuscules in roots stained with trypan blue, indicating arbuscular mycorrhizal colonization."
+  : "Nodules of "+displayValue("scientific_name",p.scientific_name)+", indicating rhizobial symbiosis and nitrogen fixation.");
+ const label=title;
+ const buttons=sectionImageButton(imgs,0,"symbiont-photo","Enlarge "+label+" image")+
+ (imgs.length>1?'<div class="symbiont-thumbs">'+imgs.slice(1).map((u,i)=>sectionImageButton(imgs,i+1,"symbiont-photo","Enlarge "+label+" image "+(i+2))).join("")+'</div>':"");
+ return '<section class="symbiont-box"><h4>'+escapeHTML(label)+'</h4>'+buttons+'<p class="symbiont-caption">'+escapeHTML(caption)+'</p></section>';
+}
+function makePlantDialog(p){
+ const sci=displayValue("scientific_name",p.scientific_name),family=textField(p,"Family"),greek=textField(p,"Greek Name"),common=textField(p,"Common Name");
+ const primary=urls(p.card_image),gallery=urls(p.gallery_images);
+ const photoSet=[...primary,...gallery];
+ const hero=primary.length?sectionImageButton(photoSet,0,"main-photo","Enlarge photograph of "+sci):"";
+ const thumbnails=gallery.length?'<section class="photo-collection"><h3>Plant gallery</h3><div class="gallery-row">'+gallery.map((_,i)=>sectionImageButton(photoSet,i+primary.length,"gallery-thumb","Enlarge gallery photograph "+(i+1)+" of "+sci)).join("")+'</div></section>':"";
+ const micro=[makeSymbiont(p,"AMF","AMF"),makeSymbiont(p,"Rhizobia","Nitrogen-Fixing Nodules")].filter(Boolean);
+ const microHTML=micro.length?'<h3 class="symbionts-title">Symbiotic associations</h3><div class="symbiont-grid">'+micro.join("")+'</div>':"";
+ const symbiontText=[["Symbionts","Symbionts"],["AMF","AMF"],["Rhizobia","Rhizobia"],["Ericoid mycorrhizal fungi","Ericoid mycorrhizal fungi"]].map(([label,key])=>formatTrait(label,p[key])).filter(Boolean).join("");
+ const pollinatorTrait=formatTrait("Pollinators",p.Pollinators,true);
+ return '<div class="dialog-content"><div class="plant-heading"><h2>'+escapeHTML(sci)+'</h2><p>'+[common,greek,family].filter(Boolean).map(escapeHTML).join(" · ")+'</p></div>'+
+ hero+thumbnails+makeTraits(p)+(symbiontText||pollinatorTrait?'<h3 class="traits-title">Biological interactions</h3><div class="traits-grid">'+symbiontText+pollinatorTrait+'</div>':"")+microHTML+'</div>';
+}
+function openPlant(p){
+ previousFocus=document.activeElement;
+ $("plantDialogContent").innerHTML=makePlantDialog(p);
+ plantDialog.showModal();
+ const url=new URL(location.href);url.searchParams.set("id",p.id);history.replaceState(null,"",url);
+}
+function closePlant(){plantDialog.close()}
+$("closePlantDialog").addEventListener("click",closePlant);
+plantDialog.addEventListener("close",()=>{
+ previousFocus?.focus?.();
+ const url=new URL(location.href);url.searchParams.delete("id");history.replaceState(null,"",url);
+});
+plantDialog.addEventListener("click",e=>{if(e.target===plantDialog)closePlant()});
+function showLightbox(){
+ const src=activeImages[imageIndex];if(!src)return;
+ $("lightboxImage").src=src;$("lightboxImage").alt="Enlarged botanical photograph";
+ $("lightboxCaption").textContent=activeImages.length>1?(imageIndex+1)+" / "+activeImages.length:"";
+ $("lightboxPrev").hidden=activeImages.length<2;$("lightboxNext").hidden=activeImages.length<2;
+}
+function openLightbox(images,index){
+ activeImages=images;imageIndex=Math.max(0,Math.min(images.length-1,index));showLightbox();
+ lightbox.showModal();
+}
+function shiftLightbox(dir){imageIndex=(imageIndex+dir+activeImages.length)%activeImages.length;showLightbox()}
+$("closePhotoLightbox").addEventListener("click",()=>lightbox.close());
+$("lightboxPrev").addEventListener("click",()=>shiftLightbox(-1));
+$("lightboxNext").addEventListener("click",()=>shiftLightbox(1));
+lightbox.addEventListener("click",e=>{if(e.target===lightbox)lightbox.close()});
+window.addEventListener("keydown",e=>{
+ if(!lightbox.open)return;
+ if(e.key==="ArrowRight")shiftLightbox(1);
+ if(e.key==="ArrowLeft")shiftLightbox(-1);
+});
+$("plantDialogContent").addEventListener("click",e=>{
+ const target=e.target.closest("button[data-photo-set]");if(!target)return;
+ try{const imgs=JSON.parse(target.dataset.photoSet);openLightbox(imgs,Number(target.dataset.photoIndex))}catch(e){console.error(e)}
+});
+let touchStart=0;
+lightbox.addEventListener("touchstart",e=>{touchStart=e.changedTouches[0]?.screenX||0},{passive:true});
+lightbox.addEventListener("touchend",e=>{const diff=(e.changedTouches[0]?.screenX||0)-touchStart;if(Math.abs(diff)>55 && activeImages.length>1)shiftLightbox(diff>0?-1:1)},{passive:true});
+function render(plants){
+ lastRendered=plants.filter(p=>p.card_image&&p.scientific_name);
+ grid.innerHTML=lastRendered.map(p=>'<article class="card-animation-layer"><div class="card" data-id="'+escapeHTML(p.id)+'"><button class="card-button" type="button" data-plant-id="'+escapeHTML(p.id)+'" aria-label="View '+escapeHTML(displayValue("scientific_name",p.scientific_name))+'"><div class="image-wrap loading"><img loading="lazy" decoding="async" src="'+escapeHTML(p.card_image)+'" alt="'+escapeHTML(displayValue("scientific_name",p.scientific_name))+'"></div><span class="card-title">'+escapeHTML(displayValue("scientific_name",p.scientific_name))+'</span><span class="card-family">'+escapeHTML(p.Family)+'</span></button></div></article>').join("")||'<p class="error">No plants match your filters.</p>';
+ grid.querySelectorAll(".image-wrap img").forEach(img=>{
+  const done=()=>img.parentNode?.classList.remove("loading");if(img.complete)done();
+  img.addEventListener("load",done,{once:true});img.addEventListener("error",done,{once:true});
+ });
+ $("statusLine").textContent=lastRendered.length+" plants shown";
+}
+grid.addEventListener("click",e=>{
+ const button=e.target.closest("[data-plant-id]");if(!button)return;
+ const plant=allPlants.find(p=>p.id===button.dataset.plantId);if(plant)openPlant(plant);
+});
+function applyFilters(){
+ const q=clean($("searchInput").value).toLocaleLowerCase();
+ render(allPlants.filter(p=>{
+ const txt=[p.scientific_name,p["Greek Name"],p.Family,p["Common Name"]].join(" ").toLocaleLowerCase();
+ return (!q||txt.includes(q))&&(!edibleOnly||yes(p.Edible))&&(!beeOnly||yes(p["Bee plant"]));
+ }));
+}
+$("searchInput").addEventListener("input",applyFilters);
+$("edibleBtn").addEventListener("click",()=>{edibleOnly=!edibleOnly;$("edibleBtn").setAttribute("aria-pressed",String(edibleOnly));applyFilters()});
+$("beeBtn").addEventListener("click",()=>{beeOnly=!beeOnly;$("beeBtn").setAttribute("aria-pressed",String(beeOnly));applyFilters()});
+$("clearBtn").addEventListener("click",()=>{$("searchInput").value="";edibleOnly=false;beeOnly=false;$("edibleBtn").setAttribute("aria-pressed","false");$("beeBtn").setAttribute("aria-pressed","false");applyFilters();$("statusLine").textContent="Filters cleared"});
+$("randomBtn").addEventListener("click",()=>{
+ if(!lastRendered.length)return;
+ const plant=lastRendered[Math.floor(Math.random()*lastRendered.length)];
+ const card=Array.from(grid.querySelectorAll(".card")).find(c=>c.dataset.id===plant.id);
+ if(!card)return;
+ grid.querySelectorAll(".picked").forEach(c=>c.classList.remove("picked"));
+ card.classList.add("picked");card.scrollIntoView({behavior:"smooth",block:"center"});
+ $("statusLine").textContent="Random pick: "+displayValue("scientific_name",plant.scientific_name);
+});
+(async()=>{
+ try{
+  grid.innerHTML='<p class="loading">Loading plants…</p>';
+  const response=await fetch(CSV_URL,{cache:"no-store"});if(!response.ok)throw new Error("CSV HTTP "+response.status);
+  allPlants=parseCSV(await response.text());applyFilters();
+  const id=new URL(location.href).searchParams.get("id");
+  const p=allPlants.find(x=>x.id===id);if(p)openPlant(p);
+ }catch(e){console.error(e);grid.innerHTML='<p class="error">Could not load the plant database. Check the browser console.</p>'}
+})();
+// Original blob menu animation, adapted for keyboard and touch.
+(()=>{
+ const menu=$("menu"),blob=$("blob"),path=$("blob-path"),hamburger=document.querySelector(".hamburger"),inner=document.querySelector(".menu-inner");
+ if(!menu||!blob||!path||!hamburger||!inner)return;
+ const VB_W=60,VB_H=1000,anchor=120,curviness=65,hoverZone=150,expand=8,maxPull=22;
+ let peek=22,mouseX=0,mouseY=innerHeight/2,y=mouseY,curveX=0,targetX=0,expanded=false;
+ function getPeek(){const n=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--peek"));return Number.isFinite(n)?n:22}
+ function setMenu(on){menu.classList.toggle("expanded",on);expanded=on;hamburger.setAttribute("aria-expanded",String(on))}
+ hamburger.addEventListener("mouseenter",()=>setMenu(true));inner.addEventListener("mouseenter",()=>setMenu(true));menu.addEventListener("mouseleave",()=>setMenu(false));
+ hamburger.addEventListener("click",()=>setMenu(!expanded));
+ menu.addEventListener("focusin",()=>setMenu(true));
+ menu.addEventListener("focusout",e=>{if(!menu.contains(e.relatedTarget))setMenu(false)});
+ window.addEventListener("pointermove",e=>{mouseX=e.clientX;mouseY=e.clientY},{passive:true});
+ window.addEventListener("resize",()=>{peek=getPeek()});
+ peek=getPeek();
+ function tick(){
+ const vh=Math.max(1,innerHeight);const minPx=anchor/VB_H*vh,maxPx=(VB_H-anchor)/VB_H*vh;
+ y+=(Math.min(maxPx,Math.max(minPx,mouseY))-y)*.18;
+ hamburger.style.top=(y-(hamburger.offsetHeight||26)/2)+"px";
+ const yVB=y/vh*VB_H;
+ targetX=expanded||mouseX>hoverZone?0:Math.max(-maxPull,Math.min(0,-((VB_W+expand)/100)*(mouseX-hoverZone)));
+ curveX+=(targetX-curveX)*.12;
+ const d="M"+VB_W+","+VB_H+"H0V0h"+VB_W+"v"+(yVB-anchor)+"c0,"+curviness+","+curveX+","+curviness+","+curveX+","+anchor+"S"+VB_W+","+yVB+","+VB_W+","+(yVB+anchor*2)+"V"+VB_H+"z";
+ path.setAttribute("d",d);blob.style.width=(peek+Math.abs(curveX))+"px";
+ requestAnimationFrame(tick);
+ }
+ requestAnimationFrame(tick);
+})();
 
-      if (!menu || !blob || !blobPath || !hamburger || !menuInner) return;
-
-      const VB_W = 60;
-      const VB_H = 1000;
-
-      const anchorDistance = 120;
-      const curviness = anchorDistance - 55;
-      const hoverZone = 150;
-      const expandAmount = 8;
-      const maxPull = 22;
-
-      function getPeek() {
-        const raw = getComputedStyle(document.documentElement)
-          .getPropertyValue("--peek")
-          .trim();
-        const n = parseFloat(raw);
-        return Number.isFinite(n) ? n : 22;
-      }
-      let peek = getPeek();
-
-      let mouseX = 0;
-      let mouseYpx = window.innerHeight / 2;
-
-      let yPx = mouseYpx;
-      let curveX = 0;
-      let targetX = 0;
-
-      let menuExpanded = false;
-
-      const SMOOTH_Y = 0.18;
-      const SMOOTH_X = 0.12;
-      const lerp = (a, b, t) => a + (b - a) * t;
-
-      function openMenu() {
-        menu.classList.add("expanded");
-        menuExpanded = true;
-      }
-
-      function closeMenu() {
-        menu.classList.remove("expanded");
-        menuExpanded = false;
-      }
-
-      window.addEventListener("pointermove", (e) => {
-        mouseX = e.clientX;
-        mouseYpx = e.clientY;
-      });
-
-      window.addEventListener("resize", () => {
-        peek = getPeek();
-      });
-
-      hamburger.addEventListener("mouseenter", openMenu);
-      menuInner.addEventListener("mouseenter", openMenu);
-      menu.addEventListener("mouseleave", closeMenu);
-
-      hamburger.addEventListener("click", (e) => {
-        e.preventDefault();
-        menuExpanded ? closeMenu() : openMenu();
-      });
-
-      (function initPath() {
-        const yVB0 = VB_H / 2;
-        const d0 =
-          "M" + VB_W + "," + VB_H +
-          "H0V0h" + VB_W +
-          "v" + (yVB0 - anchorDistance) +
-          "c0," + curviness + ",0," + curviness + ",0," + anchorDistance +
-          "S" + VB_W + "," + yVB0 + "," + VB_W + "," + (yVB0 + anchorDistance * 2) +
-          "V" + VB_H + "z";
-        blobPath.setAttribute("d", d0);
-        blob.style.width = peek + "px";
-      })();
-
-      function tick() {
-        const vh = Math.max(1, window.innerHeight);
-
-        const minPx = (anchorDistance / VB_H) * vh;
-        const maxPx = ((VB_H - anchorDistance) / VB_H) * vh;
-        const clampedY = Math.min(maxPx, Math.max(minPx, mouseYpx));
-
-        yPx = lerp(yPx, clampedY, SMOOTH_Y);
-
-        const hamH = hamburger.offsetHeight || 26;
-        hamburger.style.top = (yPx - hamH / 2) + "px";
-
-        const yVB = (yPx / vh) * VB_H;
-
-        if (menuExpanded || mouseX > hoverZone) {
-          targetX = 0;
-        } else {
-          const raw = -(((VB_W + expandAmount) / 100) * (mouseX - hoverZone));
-          targetX = Math.max(-maxPull, Math.min(0, raw));
-        }
-
-        curveX = lerp(curveX, targetX, SMOOTH_X);
-
-        const d =
-          "M" + VB_W + "," + VB_H +
-          "H0V0h" + VB_W +
-          "v" + (yVB - anchorDistance) +
-          "c0," + curviness + "," + curveX + "," + curviness + "," + curveX + "," + anchorDistance +
-          "S" + VB_W + "," + yVB + "," + VB_W + "," + (yVB + anchorDistance * 2) +
-          "V" + VB_H + "z";
-
-        blobPath.setAttribute("d", d);
-        blob.style.width = (peek + Math.abs(curveX)) + "px";
-
-        requestAnimationFrame(tick);
-      }
-
-      requestAnimationFrame(tick);
-    })();
-
-    (() => {
-      const CSV_URL =
-        "https://raw.githubusercontent.com/Rebentisu/plant-species-database/main/database_site.csv";
-
-      const grid = document.getElementById("plantGrid");
-      const searchInput = document.getElementById("searchInput");
-      const edibleBtn = document.getElementById("edibleBtn");
-      const beeBtn = document.getElementById("beeBtn");
-      const randomBtn = document.getElementById("randomBtn");
-      const clearBtn = document.getElementById("clearBtn");
-      const statusLine = document.getElementById("statusLine");
-
-      if (!grid) return;
-
-      let allPlants = [];
-      let edibleOnly = false;
-      let beeOnly = false;
-      let lastRendered = [];
-
-      function setStatus(msg){
-        if (statusLine) statusLine.textContent = msg || "";
-      }
-
-      function parseCSV(text) {
-        const rows = [];
-        let row = [];
-        let field = "";
-        let inQuotes = false;
-
-        for (let i = 0; i < text.length; i++) {
-          const c = text[i];
-          const next = text[i + 1];
-
-          if (c === '"' && inQuotes && next === '"') {
-            field += '"';
-            i++;
-            continue;
-          }
-          if (c === '"') {
-            inQuotes = !inQuotes;
-            continue;
-          }
-          if (c === "," && !inQuotes) {
-            row.push(field);
-            field = "";
-            continue;
-          }
-          if ((c === "\n" || c === "\r") && !inQuotes) {
-            if (c === "\r" && next === "\n") i++;
-            row.push(field);
-            field = "";
-            if (row.some(v => v.trim() !== "")) rows.push(row);
-            row = [];
-            continue;
-          }
-          field += c;
-        }
-
-        if (field.length || row.length) {
-          row.push(field);
-          if (row.some(v => v.trim() !== "")) rows.push(row);
-        }
-        return rows;
-      }
-
-      function rowsToObjects(rows) {
-        const headers = rows[0].map(h => h.replace(/^\uFEFF/, "").trim());
-        return rows.slice(1).map(r => {
-          const obj = {};
-          headers.forEach((h, i) => (obj[h] = (r[i] ?? "").trim()));
-          return obj;
-        });
-      }
-
-      function escapeHtml(s) {
-        return String(s)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function pickField(p, candidates) {
-        for (const k of candidates) {
-          if (p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== "") {
-            return String(p[k]).trim();
-          }
-        }
-        return "";
-      }
-
-      function isYes(val){
-        return /^yes$/i.test(String(val || "").trim());
-      }
-
-      function isEdibleYes(p) {
-        const val = pickField(p, ["Edible", "edible", "EDIBLE"]);
-        return isYes(val);
-      }
-
-      function isBeeYes(p) {
-        const val = pickField(p, ["Bee plant"]);
-        return isYes(val);
-      }
-
-      function matchesSearch(p, q) {
-        if (!q) return true;
-        const sci = pickField(p, ["scientific_name", "Scientific Name", "scientific name"]);
-        const greek = pickField(p, ["Greek Name"]);
-        const fam = pickField(p, ["Family", "family"]);
-        const hay = `${sci} ${greek} ${fam}`.toLowerCase();
-        return hay.includes(q.toLowerCase());
-      }
-
-      function attachImageHandlers() {
-        const imgs = grid.querySelectorAll("img[data-shimmer='1']");
-        imgs.forEach(img => {
-          const wrap = img.closest(".image-wrap");
-          if (!wrap) return;
-
-          const done = () => wrap.classList.remove("loading");
-
-          if (img.complete && img.naturalWidth > 0) {
-            done();
-          } else {
-            img.addEventListener("load", done, { once: true });
-            img.addEventListener("error", () => {
-              done();
-              wrap.style.background = "rgba(0,0,0,0.06)";
-            }, { once: true });
-          }
-        });
-      }
-
-      function render(plants) {
-        lastRendered = plants.filter(p => p.card_image && p.scientific_name);
-
-        const html = lastRendered.map((p) => {
-          const id = p.id || "";
-          const img = escapeHtml(p.card_image);
-          const sci = escapeHtml(p.scientific_name);
-          const fam = escapeHtml(p.Family || "");
-          const href = `plant.html?id=${encodeURIComponent(id)}`;
-
-          return `
-            <div class="card-animation-layer">
-              <article class="card" data-id="${escapeHtml(id)}">
-                <a href="${href}">
-                  <div class="image-wrap loading">
-                    <img data-shimmer="1" src="${img}" alt="${sci}" decoding="async" height="500" width="500">
-                  </div>
-                </a>
-                <p>
-                  <a href="${href}"><strong><em>${sci}</em></strong></a><br>
-                  <span>${fam}</span>
-                </p>
-              </article>
-            </div>
-          `;
-        }).join("");
-
-        grid.innerHTML = html || `<p class="error">No plants match your filters.</p>`;
-        attachImageHandlers();
-        setStatus(`${lastRendered.length} plants shown`);
-      }
-
-      function applyFilters() {
-        const q = (searchInput?.value || "").trim();
-
-        const filtered = allPlants
-          .filter(p => matchesSearch(p, q))
-          .filter(p => (edibleOnly ? isEdibleYes(p) : true))
-          .filter(p => (beeOnly ? isBeeYes(p) : true));
-
-        render(filtered);
-      }
-
-      function clearPicked(){
-        grid.querySelectorAll(".card.picked").forEach(el => el.classList.remove("picked"));
-      }
-
-      function pickRandomPlant(){
-        if (!lastRendered.length) {
-          setStatus("No plants available to pick from.");
-          return;
-        }
-
-        const chosen = lastRendered[Math.floor(Math.random() * lastRendered.length)];
-        const id = chosen.id || "";
-        const sci = chosen.scientific_name || "Random plant";
-
-        const el = grid.querySelector(`.card[data-id="${CSS.escape(String(id))}"]`);
-        if (!el) return;
-
-        clearPicked();
-        el.classList.add("picked");
-
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setStatus(`Random pick: ${sci}`);
-      }
-
-      async function init() {
-        try {
-          grid.innerHTML = `<p class="loading">Loading plants…</p>`;
-          const res = await fetch(CSV_URL, { cache: "no-store" });
-          if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-
-          const text = await res.text();
-          const rows = parseCSV(text);
-          allPlants = rowsToObjects(rows);
-
-          applyFilters();
-
-          if (searchInput) searchInput.addEventListener("input", applyFilters);
-
-          if (edibleBtn) {
-            edibleBtn.addEventListener("click", () => {
-              edibleOnly = !edibleOnly;
-              edibleBtn.setAttribute("aria-pressed", String(edibleOnly));
-              applyFilters();
-            });
-          }
-
-          if (beeBtn) {
-            beeBtn.addEventListener("click", () => {
-              beeOnly = !beeOnly;
-              beeBtn.setAttribute("aria-pressed", String(beeOnly));
-              applyFilters();
-            });
-          }
-
-          if (randomBtn) {
-            randomBtn.addEventListener("click", pickRandomPlant);
-          }
-
-          if (clearBtn) {
-            clearBtn.addEventListener("click", () => {
-              if (searchInput) searchInput.value = "";
-              edibleOnly = false;
-              beeOnly = false;
-
-              edibleBtn?.setAttribute("aria-pressed", "false");
-              beeBtn?.setAttribute("aria-pressed", "false");
-
-              applyFilters();
-              setStatus("Filters cleared.");
-            });
-          }
-
-        } catch (e) {
-          console.error(e);
-          grid.innerHTML = `<p class="error">Could not load the plant database. Check Console.</p>`;
-        }
-      }
-
-      init();
-    })();
   </script>
 </body>
 </html>
