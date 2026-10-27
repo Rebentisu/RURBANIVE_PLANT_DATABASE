@@ -2,9 +2,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plant Species Database – Milos Restoration</title>
+
+<!-- Redirect standalone visits to RURBANIVE Community Store -->
+<script>
+  const communityStore =
+    "https://community-store.rurbanive-project.eu/";
+
+  const destination =
+    communityStore +
+    "rural-urban-enablers-overview-page/" +
+    "ecosystem-and-biodiversity-restoration/";
+
+  if (
+    window.top === window.self &&
+    !document.referrer.startsWith(communityStore)
+  ) {
+    window.location.replace(destination);
+  }
+</script>
 
 <style>
 @import url("https://unpkg.com/open-props");
