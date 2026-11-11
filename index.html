@@ -4,7 +4,7 @@
 <head>
   
 
-</script>
+
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -253,6 +253,7 @@ input:focus-visible {
   padding: 0;
   background: transparent;
   z-index: 20;
+  touch-action: manipulation;
 }
 
 .hamburger .line {
@@ -2692,230 +2693,110 @@ async function initializeDatabase() {
 initializeDatabase();
 
 /* =========================================
-   ANIMATED BLOB MENU
+   ANIMATED RURBANIVE SIDE MENU
+   Desktop: hover to open, blob follows cursor.
+   Touch/keyboard: click or focus to open.
    ========================================= */
 
 (() => {
+  const menu = document.getElementById("menu");
+  const blob = document.getElementById("blob");
+  const blobPath = document.getElementById("blob-path");
+  const hamburger = menu?.querySelector(".hamburger");
+  const menuInner = menu?.querySelector(".menu-inner");
+  if (!menu || !blob || !blobPath || !hamburger || !menuInner) return;
 
-  const menu =
-    $("menu");
-
-  const blob =
-    $("blob");
-
-  const blobPath =
-    $("blob-path");
-
-  const hamburger =
-    document.querySelector(".hamburger");
-
-  const menuInner =
-    document.querySelector(".menu-inner");
-
-  if (
-    !menu ||
-    !blob ||
-    !blobPath ||
-    !hamburger ||
-    !menuInner
-  ) {
-    return;
-  }
-
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const VB_W = 60;
   const VB_H = 1000;
-
-  const anchorDistance = 120;
-  const curviness = 65;
+  const anchorDistance = 110;
   const hoverZone = 150;
-  const expandAmount = 8;
-  const maxPull = 22;
 
-  let peek = 22;
-  let mouseX = 0;
-  let mouseYpx = window.innerHeight / 2;
-  let yPx = mouseYpx;
-  let curveX = 0;
-  let targetX = 0;
   let expanded = false;
+  let pointerX = hoverZone + 1;
+  let pointerY = window.innerHeight / 2;
+  let smoothY = pointerY;
+  let curveX = 20;
 
-  const lerp = (a, b, t) =>
-    a + (b - a) * t;
+  const lerp = (a, b, t) => a + (b - a) * t;
 
   function getPeek() {
-
-    const raw =
-      getComputedStyle(
-        document.documentElement
-      ).getPropertyValue("--peek");
-
-    const n =
-      parseFloat(raw);
-
-    return Number.isFinite(n)
-      ? n
-      : 22;
+    const n = parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue("--peek"));
+    return Number.isFinite(n) ? n : 22;
   }
 
   function setMenu(open) {
-
-    expanded = open;
-
-    menu.classList.toggle(
-      "expanded",
-      open
-    );
-
-    hamburger.setAttribute(
-      "aria-expanded",
-      String(open)
-    );
+    expanded = Boolean(open);
+    menu.classList.toggle("expanded", expanded);
+    hamburger.setAttribute("aria-expanded", String(expanded));
+    hamburger.setAttribute("aria-label", expanded ? "Close menu" : "Open menu");
   }
 
-  peek = getPeek();
+  // Moving onto the narrow, visible left strip opens the menu on desktop.
+  menu.addEventListener("pointerenter", event => {
+    if (finePointer.matches && event.pointerType === "mouse") setMenu(true);
+  });
+  menu.addEventListener("pointerleave", event => {
+    if (finePointer.matches && event.pointerType === "mouse") setMenu(false);
+  });
 
-  hamburger.addEventListener(
-    "mouseenter",
-    () => setMenu(true)
-  );
-
-  menuInner.addEventListener(
-    "mouseenter",
-    () => setMenu(true)
-  );
-
-  menu.addEventListener(
-    "mouseleave",
-    () => setMenu(false)
-  );
-
-  hamburger.addEventListener(
-    "click",
-    () => setMenu(!expanded)
-  );
-
-  menu.addEventListener(
-    "focusin",
-    () => setMenu(true)
-  );
-
-  menu.addEventListener(
-    "focusout",
-    event => {
-      if (!menu.contains(event.relatedTarget)) {
-        setMenu(false);
-      }
+  // The hamburger works on touch screens and with keyboard navigation.
+  hamburger.addEventListener("click", event => {
+    event.preventDefault();
+    setMenu(!expanded);
+  });
+  menu.addEventListener("focusin", event => {
+    if (event.target !== hamburger) setMenu(true);
+  });
+  menu.addEventListener("focusout", event => {
+    if (!menu.contains(event.relatedTarget)) setMenu(false);
+  });
+  document.addEventListener("pointerdown", event => {
+    if (expanded && !menu.contains(event.target)) setMenu(false);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && expanded) {
+      setMenu(false);
+      hamburger.focus();
     }
-  );
+  });
 
-  window.addEventListener(
-    "pointermove",
-    event => {
-      mouseX = event.clientX;
-      mouseYpx = event.clientY;
-    },
-    {passive: true}
-  );
-
-  window.addEventListener(
-    "resize",
-    () => {
-      peek = getPeek();
+  window.addEventListener("pointermove", event => {
+    if (event.pointerType === "mouse" || event.pointerType === "pen") {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
     }
-  );
+  }, {passive: true});
 
-  function tick() {
-
-    const vh =
-      Math.max(
-        1,
-        window.innerHeight
-      );
-
-    const minY =
-      anchorDistance / VB_H * vh;
-
-    const maxY =
-      (VB_H - anchorDistance) / VB_H * vh;
-
-    const clampedY =
-      Math.min(
-        maxY,
-        Math.max(minY, mouseYpx)
-      );
-
-    yPx =
-      lerp(
-        yPx,
-        clampedY,
-        .18
-      );
-
-    hamburger.style.top =
-      (
-        yPx -
-        (hamburger.offsetHeight || 26) / 2
-      ) + "px";
-
-    const yVB =
-      yPx / vh * VB_H;
-
-    if (
-      expanded ||
-      mouseX > hoverZone
-    ) {
-
-      targetX = 0;
-
+  function animate() {
+    const vh = Math.max(1, window.innerHeight);
+    if (finePointer.matches) {
+      const paddingY = Math.min(80, vh / 4);
+      const boundedY = Math.max(paddingY, Math.min(vh - paddingY, pointerY));
+      smoothY = lerp(smoothY, boundedY, 0.18);
+      hamburger.style.top = `${smoothY - (hamburger.offsetHeight || 26) / 2}px`;
     } else {
-
-      const raw =
-        -((VB_W + expandAmount) / 100) *
-        (mouseX - hoverZone);
-
-      targetX =
-        Math.max(
-          -maxPull,
-          Math.min(0, raw)
-        );
-
+      // Keep the mobile toggle at the top, not halfway down the screen.
+      hamburger.style.top = "24px";
+      smoothY = Math.max(80, vh / 2);
     }
 
-    curveX =
-      lerp(
-        curveX,
-        targetX,
-        .12
-      );
-
-    const d =
-      "M" + VB_W + "," + VB_H +
-      "H0V0h" + VB_W +
-      "v" + (yVB - anchorDistance) +
-      "c0," + curviness +
-      "," + curveX +
-      "," + curviness +
-      "," + curveX +
-      "," + anchorDistance +
-      "S" + VB_W +
-      "," + yVB +
-      "," + VB_W +
-      "," + (yVB + anchorDistance * 2) +
-      "V" + VB_H + "z";
-
-    blobPath.setAttribute(
-      "d",
-      d
-    );
-
-    blob.style.width =
-      (peek + Math.abs(curveX)) + "px";
-
-    requestAnimationFrame(tick);
+    const y = smoothY / vh * VB_H;
+    const proximity = !expanded && finePointer.matches
+      ? Math.max(0, Math.min(1, (hoverZone - pointerX) / hoverZone))
+      : 0;
+    // The curved edge becomes more prominent as the cursor approaches.
+    curveX = lerp(curveX, 20 + 28 * proximity, 0.12);
+    const d = `M${VB_W},${VB_H} H0 V0 H${VB_W} V${y-anchorDistance}
+      C${VB_W},${y-50} ${curveX},${y-45} ${curveX},${y}
+      S${VB_W},${y+80} ${VB_W},${y+anchorDistance} V${VB_H} Z`;
+    blobPath.setAttribute("d", d);
+    blob.style.width = `${getPeek() + (curveX - 20) * 0.55}px`;
+    requestAnimationFrame(animate);
   }
 
-  requestAnimationFrame(tick);
-
+  requestAnimationFrame(animate);
 })();
 </script>
 
