@@ -224,9 +224,19 @@ input:focus-visible {
   color: var(--y-accent);
 }
 
-.menu-inner a {
+.menu-inner a,
+.menu-inner .menu-link {
   color: inherit;
   text-decoration: none;
+  font: inherit;
+}
+
+.menu-inner .menu-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
 
 #blob {
@@ -775,6 +785,40 @@ body:has(dialog[open]) {
 }
 
 /* =========================================
+   LICENSE & CREDITS DIALOG
+   ========================================= */
+
+#licenseDialog {
+  width: min(620px, calc(100vw - 28px));
+  max-height: 88dvh;
+  overflow: auto;
+  border-radius: 18px;
+  background: #f5faf7;
+  box-shadow: 0 25px 90px rgba(0, 0, 0, .4);
+}
+
+.license-content {
+  padding: 30px;
+}
+
+.license-content h2 {
+  color: var(--g-dark);
+  margin: 0 50px 20px 0;
+  font-size: 28px;
+}
+
+.license-content p {
+  line-height: 1.65;
+  color: #46594d;
+  margin: 0 0 14px;
+}
+
+.license-content a {
+  color: var(--g-dark);
+  text-underline-offset: 3px;
+}
+
+/* =========================================
    RESPONSIVE DESIGN
    ========================================= */
 
@@ -893,27 +937,20 @@ body:has(dialog[open]) {
       </a>
     </div>
 
+    <!-- Navigation targets the Community Store, not local GitHub pages.
+         The resource links use browser text-fragment deep links to reach the
+         matching Elementor headings without editing the WordPress site.
+         If Elementor anchor IDs are added later, replace these fragments
+         with #resource-1, #resource-2, etc. for universal browser support. -->
     <ul>
-      <li>
-        <a href="index.html">Home</a>
-      </li>
-      <li>
-        <a href="plant-database.html"
-           aria-current="page">
-          Plant Database
-        </a>
-      </li>
-      <li>
-        <a href="restoration-protocols.html">
-          Restoration Protocols
-        </a>
-      </li>
-      <li>
-        <a href="legislation.html">Legislation</a>
-      </li>
-      <li>
-        <a href="about.html">About</a>
-      </li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/" target="_top">Home</a></li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%231%3A%20Database%20with%20Mediterranean%20Biome%20Plant%20Species" target="_top">Mediterranean Plant Database</a></li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%232%3A%20Ecosystem%20and%20biodiversity%20restoration%20protocols" target="_top">Restoration Protocols</a></li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%233%3A%20Guidelines%20for%20Ecosystem%20and%20Biodiversity%20Restoration%20%E2%80%93%20EU%20Environmental%20Legislation%20Timeline" target="_top">EU Legislation Timeline</a></li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%234%3A%20Guidelines%20for%20Cultivation%20of%20Crops%20Adapted%20to%20Local%20Seasonally%20Dry%20Conditions" target="_top">Dryland Cultivation Guidelines</a></li>
+      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Digital%20Resource%3A%20360%C2%B0%20Botanical%20Path%20Tour" target="_top">360&deg; Botanical Path Tour</a></li>
+      <li><button id="licenseTrigger" class="menu-link" type="button"
+                  aria-haspopup="dialog" aria-controls="licenseDialog">License &amp; Credits</button></li>
     </ul>
 
   </div>
@@ -1043,12 +1080,6 @@ body:has(dialog[open]) {
       RURBANIVE · Milos ecosystem and biodiversity restoration
     </span>
 
-    <a href="https://doi.org/10.5281/zenodo.23456678"
-       target="_blank"
-       rel="noopener noreferrer">
-      Photographic dataset on Zenodo
-    </a>
-
   </footer>
 
 </main>
@@ -1109,8 +1140,37 @@ body:has(dialog[open]) {
 
 </dialog>
 
+<!-- LICENSE & CREDITS: opens inside the database iframe -->
+<dialog id="licenseDialog" aria-labelledby="licenseTitle">
+  <button id="closeLicenseDialog" class="dialog-close" type="button"
+          aria-label="Close License &amp; Credits">&times;</button>
+  <div class="license-content">
+    <h2 id="licenseTitle">License &amp; Credits</h2>
+    <p><strong>Project:</strong> RURBANIVE – Milos Ecosystem and Biodiversity Restoration.</p>
+    <p><strong>Responsible partners:</strong> Agricultural University of Athens (AUA) and IMERYS.</p>
+    <p><strong>Licence:</strong> The Milos RUE entry in the RURBANIVE Community Store
+       lists <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+       target="_blank" rel="noopener noreferrer">Creative Commons Attribution–NonCommercial–ShareAlike 4.0 (CC BY-NC-SA 4.0)</a>.
+       Individual datasets, photographs and third-party materials may have separate
+       licensing or attribution terms.</p>
+    <p><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/" target="_top">View the Milos RUE on the Community Store</a></p>
+  </div>
+</dialog>
+
 <script>
 "use strict";
+
+/* License & Credits popup — native dialog handles Escape and focus. */
+const licenseDialog = document.getElementById("licenseDialog");
+document.getElementById("licenseTrigger").addEventListener("click", () => {
+  licenseDialog.showModal();
+});
+document.getElementById("closeLicenseDialog").addEventListener("click", () => {
+  licenseDialog.close();
+});
+licenseDialog.addEventListener("click", event => {
+  if (event.target === licenseDialog) licenseDialog.close();
+});
 
 /* =========================================
    DATABASE
