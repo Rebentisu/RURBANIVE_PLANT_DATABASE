@@ -32,8 +32,6 @@
 @import url("https://unpkg.com/open-props");
 
 :root {
-  --menuW: 300px;
-  --peek: 22px;
   --g-dark: #326450;
   --g-light: #A5BE3C;
   --y-accent: #ECBF00;
@@ -83,7 +81,7 @@ button {
   width: min(1400px, 100%);
   margin-inline: auto;
   padding: 28px 24px 80px;
-  padding-left: calc(24px + var(--peek));
+  padding-left: 24px;
 }
 
 .page-header {
@@ -165,127 +163,6 @@ input:focus-visible {
   margin-top: 8px;
   font-size: 13px;
   color: #516358;
-}
-
-/* =========================================
-   ANIMATED BLOB MENU
-   ========================================= */
-
-#menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: var(--menuW);
-  height: 100%;
-  background: var(--g-dark);
-  z-index: 30;
-  overflow: visible;
-  transform: translateX(calc(-100% + var(--peek)));
-  transition: transform 900ms cubic-bezier(.19, 1, .22, 1);
-}
-
-#menu.expanded {
-  transform: translateX(0);
-}
-
-.menu-inner {
-  position: relative;
-  height: 100%;
-  z-index: 10;
-  padding: 18px 0 0;
-}
-
-.brand {
-  width: 100%;
-  padding: 4px 18px 0;
-}
-
-.brand-logo {
-  display: block;
-  width: min(210px, 80%);
-  height: auto;
-  object-fit: contain;
-}
-
-.menu-inner ul {
-  margin: 0 10%;
-  padding: 10px 0 0;
-  list-style: none;
-  width: 80%;
-}
-
-.menu-inner li {
-  color: white;
-  padding: 16px 0;
-  font-size: 18px;
-}
-
-.menu-inner li:hover {
-  color: var(--y-accent);
-}
-
-.menu-inner a,
-.menu-inner .menu-link {
-  color: inherit;
-  text-decoration: none;
-  font: inherit;
-}
-
-.menu-inner .menu-link {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-}
-
-#blob {
-  position: absolute;
-  top: 0;
-  right: calc(-1 * var(--peek));
-  width: var(--peek);
-  height: 100%;
-  z-index: 5;
-  pointer-events: none;
-  overflow: visible;
-}
-
-#blob-path {
-  fill: var(--g-dark);
-}
-
-.hamburger {
-  position: absolute;
-  right: calc(-1 * var(--peek) + 10px);
-  width: 34px;
-  height: 26px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  z-index: 20;
-  touch-action: manipulation;
-}
-
-.hamburger .line {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: var(--y-accent);
-  border-radius: 999px;
-}
-
-.hamburger .line:nth-child(1) {
-  top: 0;
-}
-
-.hamburger .line:nth-child(2) {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.hamburger .line:nth-child(3) {
-  bottom: 0;
 }
 
 /* =========================================
@@ -780,8 +657,18 @@ body:has(dialog[open]) {
   color: #40594d;
 }
 
-.database-footer a {
+.database-footer a,
+.database-footer .footer-license {
   color: var(--g-dark);
+}
+
+.footer-license {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* =========================================
@@ -849,7 +736,7 @@ body:has(dialog[open]) {
 @media (max-width: 600px) {
   .page {
     padding: 16px 12px 50px;
-    padding-left: calc(12px + var(--peek));
+    padding-left: 12px;
   }
 
   #plantGrid {
@@ -909,60 +796,6 @@ body:has(dialog[open]) {
 </head>
 
 <body>
-
-<!-- ======================================
-     RURBANIVE NAVIGATION
-     ====================================== -->
-
-<div id="menu">
-
-  <button class="hamburger"
-          type="button"
-          aria-label="Toggle menu"
-          aria-expanded="false">
-    <span class="line"></span>
-    <span class="line"></span>
-    <span class="line"></span>
-  </button>
-
-  <div class="menu-inner">
-
-    <div class="brand">
-      <a href="https://rurbanive-project.eu/"
-         target="_blank"
-         rel="noopener noreferrer">
-        <img class="brand-logo"
-             src="https://zenodo.org/records/18361008/files/RURBANIVE_stroke.png?download=1"
-             alt="RURBANIVE">
-      </a>
-    </div>
-
-    <!-- Navigation targets the Community Store, not local GitHub pages.
-         The resource links use browser text-fragment deep links to reach the
-         matching Elementor headings without editing the WordPress site.
-         If Elementor anchor IDs are added later, replace these fragments
-         with #resource-1, #resource-2, etc. for universal browser support. -->
-    <ul>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/" target="_top">Home</a></li>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%231%3A%20Database%20with%20Mediterranean%20Biome%20Plant%20Species" target="_top">Mediterranean Plant Database</a></li>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%232%3A%20Ecosystem%20and%20biodiversity%20restoration%20protocols" target="_top">Restoration Protocols</a></li>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%233%3A%20Guidelines%20for%20Ecosystem%20and%20Biodiversity%20Restoration%20%E2%80%93%20EU%20Environmental%20Legislation%20Timeline" target="_top">EU Legislation Timeline</a></li>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Resource%20%234%3A%20Guidelines%20for%20Cultivation%20of%20Crops%20Adapted%20to%20Local%20Seasonally%20Dry%20Conditions" target="_top">Dryland Cultivation Guidelines</a></li>
-      <li><a href="https://community-store.rurbanive-project.eu/rural-urban-enablers-overview-page/ecosystem-and-biodiversity-restoration/#:~:text=Digital%20Resource%3A%20360%C2%B0%20Botanical%20Path%20Tour" target="_top">360&deg; Botanical Path Tour</a></li>
-      <li><button id="licenseTrigger" class="menu-link" type="button"
-                  aria-haspopup="dialog" aria-controls="licenseDialog">License &amp; Credits</button></li>
-    </ul>
-
-  </div>
-
-  <svg id="blob"
-       viewBox="0 0 60 1000"
-       preserveAspectRatio="none"
-       aria-hidden="true">
-    <path id="blob-path" d=""></path>
-  </svg>
-
-</div>
 
 <!-- ======================================
      MAIN PAGE
@@ -1079,6 +912,8 @@ body:has(dialog[open]) {
     <span>
       RURBANIVE · Milos ecosystem and biodiversity restoration
     </span>
+    <button id="licenseTrigger" class="footer-license" type="button"
+            aria-haspopup="dialog" aria-controls="licenseDialog">License &amp; Credits</button>
 
   </footer>
 
@@ -2752,112 +2587,6 @@ async function initializeDatabase() {
 
 initializeDatabase();
 
-/* =========================================
-   ANIMATED RURBANIVE SIDE MENU
-   Desktop: hover to open, blob follows cursor.
-   Touch/keyboard: click or focus to open.
-   ========================================= */
-
-(() => {
-  const menu = document.getElementById("menu");
-  const blob = document.getElementById("blob");
-  const blobPath = document.getElementById("blob-path");
-  const hamburger = menu?.querySelector(".hamburger");
-  const menuInner = menu?.querySelector(".menu-inner");
-  if (!menu || !blob || !blobPath || !hamburger || !menuInner) return;
-
-  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-  const VB_W = 60;
-  const VB_H = 1000;
-  const anchorDistance = 110;
-  const hoverZone = 150;
-
-  let expanded = false;
-  let pointerX = hoverZone + 1;
-  let pointerY = window.innerHeight / 2;
-  let smoothY = pointerY;
-  let curveX = 20;
-
-  const lerp = (a, b, t) => a + (b - a) * t;
-
-  function getPeek() {
-    const n = parseFloat(getComputedStyle(document.documentElement)
-      .getPropertyValue("--peek"));
-    return Number.isFinite(n) ? n : 22;
-  }
-
-  function setMenu(open) {
-    expanded = Boolean(open);
-    menu.classList.toggle("expanded", expanded);
-    hamburger.setAttribute("aria-expanded", String(expanded));
-    hamburger.setAttribute("aria-label", expanded ? "Close menu" : "Open menu");
-  }
-
-  // Moving onto the narrow, visible left strip opens the menu on desktop.
-  menu.addEventListener("pointerenter", event => {
-    if (finePointer.matches && event.pointerType === "mouse") setMenu(true);
-  });
-  menu.addEventListener("pointerleave", event => {
-    if (finePointer.matches && event.pointerType === "mouse") setMenu(false);
-  });
-
-  // The hamburger works on touch screens and with keyboard navigation.
-  hamburger.addEventListener("click", event => {
-    event.preventDefault();
-    setMenu(!expanded);
-  });
-  menu.addEventListener("focusin", event => {
-    if (event.target !== hamburger) setMenu(true);
-  });
-  menu.addEventListener("focusout", event => {
-    if (!menu.contains(event.relatedTarget)) setMenu(false);
-  });
-  document.addEventListener("pointerdown", event => {
-    if (expanded && !menu.contains(event.target)) setMenu(false);
-  });
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && expanded) {
-      setMenu(false);
-      hamburger.focus();
-    }
-  });
-
-  window.addEventListener("pointermove", event => {
-    if (event.pointerType === "mouse" || event.pointerType === "pen") {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-    }
-  }, {passive: true});
-
-  function animate() {
-    const vh = Math.max(1, window.innerHeight);
-    if (finePointer.matches) {
-      const paddingY = Math.min(80, vh / 4);
-      const boundedY = Math.max(paddingY, Math.min(vh - paddingY, pointerY));
-      smoothY = lerp(smoothY, boundedY, 0.18);
-      hamburger.style.top = `${smoothY - (hamburger.offsetHeight || 26) / 2}px`;
-    } else {
-      // Keep the mobile toggle at the top, not halfway down the screen.
-      hamburger.style.top = "24px";
-      smoothY = Math.max(80, vh / 2);
-    }
-
-    const y = smoothY / vh * VB_H;
-    const proximity = !expanded && finePointer.matches
-      ? Math.max(0, Math.min(1, (hoverZone - pointerX) / hoverZone))
-      : 0;
-    // The curved edge becomes more prominent as the cursor approaches.
-    curveX = lerp(curveX, 20 + 28 * proximity, 0.12);
-    const d = `M${VB_W},${VB_H} H0 V0 H${VB_W} V${y-anchorDistance}
-      C${VB_W},${y-50} ${curveX},${y-45} ${curveX},${y}
-      S${VB_W},${y+80} ${VB_W},${y+anchorDistance} V${VB_H} Z`;
-    blobPath.setAttribute("d", d);
-    blob.style.width = `${getPeek() + (curveX - 20) * 0.55}px`;
-    requestAnimationFrame(animate);
-  }
-
-  requestAnimationFrame(animate);
-})();
 </script>
 
 </body>
